@@ -1,3 +1,18 @@
+//FUncionalidad del sidebar
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const toggleButton = document.getElementById("toggleSidebar");
+    const content = document.querySelector(".content");
+    const header = document.querySelector(".header");
+
+    toggleButton.addEventListener("click", function () {
+        sidebar.classList.toggle("hidden");
+        content.classList.toggle("sidebar-hidden");
+        header.classList.toggle("sidebar-hidden");
+    });
+});
+
+
 function updateDateTime() {
     const now = new Date();
     const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
@@ -34,3 +49,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = '/';
     }
 });
+

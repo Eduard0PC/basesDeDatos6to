@@ -19,46 +19,93 @@ body::after {
     opacity: 0.3;
     z-index: -1; 
 }
-
-.sidebar {
+.sidebar__toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+/* Sidebar */
+aside {
     position: fixed;
     top: 0;
     left: 0;
-    width: 15%;
+    width: 250px;
     height: 100%;
-    background-color: #000;
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #222;
+    padding-top: 40px;
+    transition: transform 0.3s ease-in-out;
 }
 
-.sidebar a {
-    color: #fff;
+/* Botón para ocultar sidebar */
+.sidebar__toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar__item {
+    padding: 15px 20px;
+}
+
+.sidebar__link {
+    color: white;
     text-decoration: none;
-    padding: 10px;
-    width: 100%;
-    text-align: center;
-    transition: background-color 0.3s;
+    display: block;
+    font-size: 18px;
+    transition: background 0.3s ease;
 }
 
-.sidebar a:hover {
-    background-color: #444;
+.sidebar__link:hover {
+    background: #333;
+    border-left: 5px solid #4CAF50;
+    padding-left: 15px;
+}
+
+/* Ocultar sidebar */
+aside.hidden {
+    transform: translateX(-100%);
+}
+
+/* Ajustar el contenido cuando el sidebar está oculto */
+.content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 250px;
+}
+
+.content.sidebar-hidden {
+    margin-left: 0;
 }
 
 .header {
     position: fixed;
     top: 0;
-    left: 15%;
-    width: 85%;
+    left: 250px;
+    width: calc(100% - 250px);  /* Se ajusta automáticamente */
     height: 50px;
     background-color: #afafaf;
     color: black;
+    font-family: 'Georgia', serif;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    font-family: 'Georgia', serif;
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
 .header h1 {
@@ -80,7 +127,10 @@ body::after {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
-
+.header.sidebar-hidden {
+    left: 0;
+    width: 100%;
+}
 .card {
     background-color: #222;
     border-radius: 10px;
