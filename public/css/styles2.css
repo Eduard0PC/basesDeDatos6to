@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 15%;
+    height: 100%;
+    background-color: #000;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #444;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 15%;
+    width: 85%;
+    height: 50px;
+    background-color: #222;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.header h1 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.header .user {
+    min-width: 150px;
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+
+.content {
+    margin-left: 15%;
+    margin-top: 50px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background-color: #222;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}
+
+.card.green {
+    background-color: #4CAF50;
+}
+
+.card.green:hover {
+    background-color: #45a049;
+}
+
+.card.card-insumos h3 {
+    font-size: 18px;
+}
+
+.card.card-ventas h3 {
+    font-size: 18px;
+}
+
+.card.card-empleados h3 {
+    font-size: 18px;
+}
+
+.card.card-punto-venta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card.card-pedidos {
+    grid-column: span 2;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #444;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.footer {
+    margin-top: 20px;
+}

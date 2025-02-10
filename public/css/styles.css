@@ -1,0 +1,130 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f3f3f3;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    width: 100%;
+}
+
+.left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #808080; 
+    z-index: 1;
+    font-family: 'Georgia', serif;
+}
+
+.left::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../src/log1.png');
+    background-size: 100%;
+    background-repeat: repeat;
+    opacity: 0.3; 
+    z-index: -1;
+}
+
+.left h1 {
+    font-size: 5rem;
+    margin: 0;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.logo img {
+    width: 335px;
+    height: 351px;
+}
+
+.right {
+    background: #1a1a1a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Georgia', serif;
+    position: relative;
+}
+
+.right h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.form {
+    width: 80%;
+    max-width: 300px;
+}
+
+.form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-bottom: 2px solid white;
+    background: transparent;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form button {
+    width: 100%;
+    padding: 10px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.form button:hover {
+    background: #45a049;
+}
+
+.check-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #53ec58;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.check-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

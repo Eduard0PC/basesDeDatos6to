@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hanburguesa</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <h1>Punto De Venta</h1>
+            <div class="logo">
+                <img src="src/logo.png" alt="LogoIcon">
+            </div>
+        </div>
+        <div class="right">
+            <h1>Bienvenido</h1>
+            <form class="form" id="loginForm">
+                <input type="text" name="usuario" id="usuario" placeholder="Usuario" required>
+                <input type="password" name="contrasenia" id="contrasenia" placeholder="Contraseña" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <p id="errorMensaje" style="color: red;"></p>
+            <div class="check-button">
+                <img src="src/check.png" alt="Icono de chequeo">
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const usuario = document.getElementById('usuario').value;
+            const contrasenia = document.getElementById('contrasenia').value;
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ usuario, contrasenia })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = '/home';
+            } else {
+                document.getElementById('errorMensaje').textContent = 'Credenciales incorrectas';
+            }
+        });
+    </script>
+</body>
+</html>
