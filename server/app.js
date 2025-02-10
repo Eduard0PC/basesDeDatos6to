@@ -4,6 +4,7 @@ const session = require('express-session');
 const connection = require('./db');
 const app = express();
 const path = require('path'); //para poder usar navegar fuera de server
+const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -59,6 +60,8 @@ app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'home.html'));
 });
 
-app.listen(3000, () => {
-    console.log('Servidor corriendo en http://localhost:3000');
+
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
