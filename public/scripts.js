@@ -1,16 +1,8 @@
 //FUncionalidad del sidebar
-document.addEventListener("DOMContentLoaded", function () {
-    const sidebar = document.getElementById("sidebar");
-    const toggleButton = document.getElementById("toggleSidebar");
-    const content = document.querySelector(".content");
-    const header = document.querySelector(".header");
-
-    toggleButton.addEventListener("click", function () {
-        sidebar.classList.toggle("hidden");
-        content.classList.toggle("sidebar-hidden");
-        header.classList.toggle("sidebar-hidden");
-    });
+document.querySelector(".toggle-btn").addEventListener("click", function () {
+    document.querySelector(".sidebar").classList.toggle("collapsed");
 });
+
 
 
 function updateDateTime() {

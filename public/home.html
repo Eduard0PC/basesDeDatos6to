@@ -7,54 +7,59 @@
     <link rel="stylesheet" href="css/styles2.css">
 </head>
 <body>
-    <aside id="sidebar">
-        <button id="toggleSidebar" class="sidebar__toggle">☰</button>
-        <ul class="sidebar__list">
-            <li class="sidebar__item"><a href="#" class="sidebar__link">Home</a></li>
-            <li class="sidebar__item"><a href="#" class="sidebar__link">Ventas</a></li>
-            <li class="sidebar__item"><a href="#" class="sidebar__link">Insumos</a></li>
-            <li class="sidebar__item"><a href="#" class="sidebar__link">Empleados</a></li>
-            <li class="sidebar__item"><a href="#" class="sidebar__link">Cerrar Sesión</a></li>
+    <aside class="sidebar">
+        <button class="toggle-btn">
+            <img src="src/menu.png" alt="Menu">
+        </button>
+        <ul>
+            <li><img src="src/homr.png" alt="Home" class="icon"> <span class="text">Home</span></li>
+            <li><img src="src/ventas.png" alt="Ventas" class="icon"> <span class="text">Ventas</span></li>
+            <li><img src="src/food.png" alt="Insumos" class="icon"> <span class="text">Insumos</span></li>
+            <li><img src="src/empb.png" alt="Empleados" class="icon"> <span class="text">Empleados</span></li>
+            <li><img src="src/logout_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="Salir" class="icon"> <span class="text">Salir</span></li>
         </ul>
-    </aside>    
-
-    <div class="header">
-        <h1>Han-Burguesa</h1>
-        <div class="user">
-            <span id="welcome">Bienvenido</span>
-        </div>
-    </div>
+    </aside>
+    
 
     <div class="content">
-        <div class="card card-insumos">
-            <h3>Insumos</h3>
+        <div class="header">
+            <h1>Han-Burguesa</h1>
+            <div class="user">
+                <span id="welcome">Bienvenido</span>
+            </div>
         </div>
-        <div class="card card-ventas">
-            <h3>Ventas</h3>
-        </div>
-        <div class="card card-empleados green">
-            <h3>Empleados</h3>
-        </div>
-        <div class="card card-punto-venta">
-            <h3>Punto De Venta</h3>
-            <p id="current-time">--:-- --</p>
-            <p id="current-date">--/--/----</p>
-            <p>999 327 2875</p>
-        </div>
-        <div class="card card-pedidos">
-            <h3>Pedidos En Curso</h3>
-            <table>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Hora</th>
-                    <th>ID</th>
-                </tr>
-                <tr>
-                    <td>Juan Perez</td>
-                    <td>07:32 PM</td>
-                    <td>0002</td>
-                </tr>
-            </table>
+    
+        <div class="allcards">
+            <div class="card card-insumos">
+                <h3>Insumos</h3>
+            </div>
+            <div class="card card-ventas">
+                <h3>Ventas</h3>
+            </div>
+            <div class="card card-empleados green">
+                <h3>Empleados</h3>
+            </div>
+            <div class="card card-punto-venta">
+                <h3>Punto De Venta</h3>
+                <p id="current-time">--:-- --</p>
+                <p id="current-date">--/--/----</p>
+                <p>999 327 2875</p>
+            </div>
+            <div class="card card-pedidos">
+                <h3>Pedidos En Curso</h3>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Hora</th>
+                        <th>ID</th>
+                    </tr>
+                    <tr>
+                        <td>Juan Perez</td>
+                        <td>07:32 PM</td>
+                        <td>0002</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <script src="scripts.js"></script>

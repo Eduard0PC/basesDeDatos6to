@@ -1,102 +1,31 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #111;
+    background-color: #000000;
     color: #fff;
+    display: flex;
 }
 
 body::after {
     content: "";
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-image: url('../src/inverted_log1.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center; 
     background-attachment: fixed;
     opacity: 0.3;
     z-index: -1; 
 }
-.sidebar__toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-}
-/* Sidebar */
-aside {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background-color: #222;
-    padding-top: 40px;
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Botón para ocultar sidebar */
-.sidebar__toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.sidebar__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar__item {
-    padding: 15px 20px;
-}
-
-.sidebar__link {
-    color: white;
-    text-decoration: none;
-    display: block;
-    font-size: 18px;
-    transition: background 0.3s ease;
-}
-
-.sidebar__link:hover {
-    background: #333;
-    border-left: 5px solid #4CAF50;
-    padding-left: 15px;
-}
-
-/* Ocultar sidebar */
-aside.hidden {
-    transform: translateX(-100%);
-}
-
-/* Ajustar el contenido cuando el sidebar está oculto */
-.content {
-    transition: margin-left 0.3s ease-in-out;
-    margin-left: 250px;
-}
-
-.content.sidebar-hidden {
-    margin-left: 0;
-}
 
 .header {
     position: fixed;
-    top: 0;
+    top: 0;  
     left: 250px;
-    width: calc(100% - 250px);  /* Se ajusta automáticamente */
+    width: calc(100% - 250px);  /* Hace que no se cuatrapee el tamaño*/
     height: 50px;
     background-color: #afafaf;
     color: black;
@@ -105,12 +34,13 @@ aside.hidden {
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+    transition: 0.2s ease-in-out;
+    z-index: 1; 
 }
 
 .header h1 {
     font-size: 20px;
-    margin: 0;
+    padding-left: 25px;
 }
 
 .header .user {
@@ -119,29 +49,128 @@ aside.hidden {
     white-space: nowrap;
 }
 
+.sidebar {
+    width: 250px;
+    background: black;
+    color: white;
+    height: 100vh;
+    padding: 10px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;  
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar .toggle-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: right;
+    padding: 10px;
+}
+
+.sidebar .toggle-btn img {
+    width: 40px;  
+    height: auto;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    flex-grow: 1;
+}
+
+.sidebar li {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+.sidebar li:hover {
+    background: rgba(255, 255, 255, 0.2); 
+    border-radius: 5px; 
+}
+
+.sidebar .icon {
+    order: 2; 
+    margin-left: auto; 
+    width: 30px; 
+    text-align: center;
+}
+
+.sidebar .text {
+    transition: opacity 0.3s ease;
+    order: 1;
+}
+
+.sidebar.collapsed .text {
+    display: none;
+}
+
 .content {
-    margin-left: 15%;
-    margin-top: 50px;
+    margin-left: 250px;
+    flex-grow: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    width: calc(100% - 250px);
+}
+
+.sidebar.collapsed + .content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+}
+
+.sidebar.collapsed + .content .header {
+    left: 60px;
+    width: calc(100% - 60px);
+}
+
+.allcards {
+    margin-top: 70px;
     padding: 20px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
     gap: 20px;
+    justify-items: center;
+    align-items: center;
 }
-.header.sidebar-hidden {
-    left: 0;
-    width: 100%;
-}
+
 .card {
-    background-color: #222;
+    background-color: #ebebeb;
+    color: #000000;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
     transition: transform 0.2s;
+    width: 90%;
+    height: auto;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .card:hover {
-    background-color: #333;
+    background-color: #b9b9b9;
     transform: scale(1.05);
 }
 
@@ -153,23 +182,12 @@ aside.hidden {
     background-color: #45a049;
 }
 
-.card.card-insumos h3 {
-    font-size: 18px;
+.card.card-insumos, .card.card-ventas, .card.card-empleados {
+    grid-row: 1;
 }
 
-.card.card-ventas h3 {
-    font-size: 18px;
-}
-
-.card.card-empleados h3 {
-    font-size: 18px;
-}
-
-.card.card-punto-venta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.card.card-punto-venta, .card.card-pedidos {
+    grid-row: 2;
 }
 
 .card.card-pedidos {
