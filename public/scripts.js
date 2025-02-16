@@ -25,14 +25,22 @@ updateDateTime();
 // Actualiza cada segundo
 setInterval(updateDateTime, 1000);
 
-//Muestra el nombre deñ usuario en la página home
+//Muestra el nombre del usuario en la página home
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const response = await fetch('/usuario');
         const data = await response.json();
 
         if (data.success) {
-            document.getElementById("welcome").textContent = `Bienvenido ${data.nombre}`;
+            const welcomeText = document.getElementById("welcome");
+            const username = data.nombre; // Nombre del usuario
+
+            // Muestra el nombre del usuario
+            welcomeText.textContent = `Bienvenido ${username}`;
+
+            // Ajusta la posición del texto según el tamaño del nombre
+            const offset = username.length * 2; 
+            welcomeText.style.marginLeft = -offset + 'px';
         } else {
             window.location.href = '/';
         }

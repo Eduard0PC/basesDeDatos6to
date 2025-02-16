@@ -53,6 +53,7 @@ body::after {
     width: 250px;
     background: black;
     color: white;
+    font-family: "Georgia", serif;
     height: 100vh;
     padding: 10px;
     transition: width 0.3s ease;
@@ -142,7 +143,7 @@ body::after {
 }
 
 .allcards {
-    margin-top: 70px;
+    margin-top: 35px;
     padding: 20px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -153,9 +154,10 @@ body::after {
 }
 
 .card {
+    position: relative;
     background-color: #ebebeb;
     color: #000000;
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
@@ -167,6 +169,77 @@ body::after {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.card-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;  
+    height: 50px;
+}
+
+.card.card-insumos h3, .card.card-ventas h3, .card.card-empleados h3 {
+    margin-top: auto;
+    font-family: "Georgia", serif;
+    font-style: italic;
+    margin-left: -150px;
+    font-size: 22px;
+}
+
+.card.card-punto-venta {
+    position: relative;
+    width: 90%;
+    height: 320px;  
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    font-family: "Georgia", serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.card.card-punto-venta h3 {
+    font-style: italic;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.card.card-punto-venta p {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: italic;
+    margin: 5px 0;
+}
+
+#current-time {
+    font-size: 30px;
+}
+
+#current-date {
+    font-size: 16px;
+}
+
+.card-punto-venta img {
+    width: 50px; 
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.card-punto-venta .whatsapp {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.card-punto-venta .whatsapp img {
+    width: 30px;
+    height: auto;
 }
 
 .card:hover {
