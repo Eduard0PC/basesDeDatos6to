@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 //const bcryptjs = require('bcryptjs'); para encriptar contraseñas pero no se usara de mientras
-const connection = require('./db');
+const { getConnection } = require('./db');
 const app = express();
 const path = require('path'); //para poder usar navegar fuera de server
 const PORT = process.env.PORT || 3000;
@@ -23,22 +23,33 @@ app.get('/', (req, res) => {
 // Ruta para validar el login
 app.post('/login', (req, res) => {
     const { usuario, contrasenia } = req.body;
-    
-    connection.query('SELECT * FROM UsuariosNom WHERE nombre_usuario = ?', [usuario], async (error, results) => {
-        if (error) return res.status(500).json({ success: false, message: 'Error en el servidor' });
+    const connection = getConnection(); // Abre conexión
 
-        if (results.length === 0) return res.status(401).json({ success: false, message: 'Usuario no encontrado' });
-        
+    connection.query('SELECT * FROM UsuariosNom WHERE nombre_usuario = ?', [usuario], (error, results) => {
+        if (error) {
+            connection.end(); // Cierra conexión
+            return res.status(500).json({ success: false, message: 'Error en el servidor' });
+        }
+
+        if (results.length === 0) {
+            connection.end(); // Cierra conexión
+            return res.status(401).json({ success: false, message: 'Usuario no encontrado' });
+        }
+
         const usuarioDB = results[0];
         const contraseñaValida = contrasenia === usuarioDB.contrasenia;
-        
-        if (!contraseñaValida) return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
+
+        if (!contraseñaValida) {
+            connection.end(); // Cierra conexión
+            return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
+        }
 
         req.session.user = {
             id: usuarioDB.id_usuario,
             nombre: usuarioDB.nombre_usuario
         };
 
+        connection.end(); // Cierra conexión
         res.json({ success: true });
     });
 });
