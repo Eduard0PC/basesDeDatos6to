@@ -51,6 +51,17 @@ app.post('/login', (req, res) => {
 
         connection.end(); // Cierra conexión
         res.json({ success: true });
+
+         // Cerrar la sesión después de 10 minutos
+        setTimeout(() => {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error('Error al cerrar sesión automáticamente:', err);
+                } else {
+                    console.log('Sesión cerrada automáticamente por inactividad.');
+                }
+            });
+        }, 600000); // 10 minutos
     });
 });
 
