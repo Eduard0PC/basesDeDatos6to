@@ -11,5 +11,4 @@ function getConnection() {
         multipleStatements: true
     });
 }
-
 module.exports = { getConnection };

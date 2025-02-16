@@ -15,6 +15,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
+//----------------------------------------------------------------------------------------------------------------LOGIN
 // Ruta para la página de inicio de sesión
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
@@ -71,6 +72,19 @@ app.get('/usuario', (req, res) => {
         return res.status(401).json({ success: false, message: 'No autenticado' });
     }
     res.json({ success: true, nombre: req.session.user.nombre });
+});
+
+//----------------------------------------------------------------------------------------------------------------LOGOUT
+app.post('/logout', (req, res) => {
+    const usuario = req.session.user ? req.session.user.nombre : 'Usuario desconocido';
+    
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Error al cerrar sesión' });
+        }
+        console.log(`Sesión cerrada para: ${usuario}`);
+        res.json({ success: true });
+    });
 });
 
 // Ruta protegida para la página home
