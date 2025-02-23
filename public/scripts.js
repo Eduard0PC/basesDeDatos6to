@@ -1,11 +1,14 @@
 //Purikitaka
 
-//FUncionalidad del sidebar
+//Funcionalidad del sidebar
 document.querySelector(".toggle-btn").addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("collapsed");
 });
 
-
+// Asegura de que el sidebar esté oculto por defecto al cargar
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelector(".sidebar").classList.add("collapsed");
+});
 
 function updateDateTime() {
     const now = new Date();
@@ -38,7 +41,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             const username = data.nombre;
             const role = data.rol;
 
-            welcomeText.textContent = `Bienvenido ${username} (${role})`;
+            welcomeText.textContent = `Bienvenid@ ${username} (${role})`;
+
+            // Ajuste dinámico del min-width
+            const tempSpan = document.createElement("span");
+            tempSpan.style.visibility = "hidden";
+            tempSpan.style.position = "absolute";
+            tempSpan.style.whiteSpace = "nowrap"; // Evita el salto de línea
+            tempSpan.style.font = window.getComputedStyle(welcomeText).font; // Asegura la misma fuente
+            tempSpan.textContent = welcomeText.textContent;
+            document.body.appendChild(tempSpan);
+
+            // Ajusta el min-width correctamente
+            const textWidth = tempSpan.getBoundingClientRect().width;
+            welcomeText.style.minWidth = `${Math.ceil(textWidth) + 20}px`; // 20px extra de margen pa que no explote
+
+            // Elimina el span temporal
+            document.body.removeChild(tempSpan);
 
             if (role.toLowerCase() === "user") {
                 // Eliminar "Empleados" del sidebar
@@ -49,8 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const allcards = document.querySelector(".allcards");
 
                 if (empleadoCard) {
-                    empleadoCard.remove();
-
+                    empleadoCard.remove(); //Borra, elimina, desintala, fulmina, destruye, aniquila, extermina, erradica, extingue, suprime, liquida, acaba, remueve, desinstala, desmonta, desarma, descompone la tarjeta de empleados
                     setTimeout(() => {
                         allcards.classList.add("no-empleados"); // Aplica la estructura de grid
                     }, 50);
