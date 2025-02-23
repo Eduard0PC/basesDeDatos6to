@@ -27,7 +27,7 @@ updateDateTime();
 // Actualiza cada segundo
 setInterval(updateDateTime, 1000);
 
-//MFUNCIONALIDADES DEPENDIENDO DEL ROL DEL USUARIO (ADMIN, USER)
+//FUNCIONALIDADES DEPENDIENDO DEL ROL DEL USUARIO (ADMIN, USER)
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const response = await fetch('/usuario');

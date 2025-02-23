@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escaneo QR</title>
+    <title>Registro</title>
     <style>
         body {
             margin: 0;
@@ -19,19 +19,34 @@
             text-align: center;
         }
 
-        img {
+        .gif-container {
             width: 150px;
             height: 150px;
-            margin-bottom: 20px;
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            width: 300%; 
+            height: 300%;
+            object-fit: cover;
+            object-position: center;
         }
 
         p {
-            font-size: 1.2rem;
+            font-size: 1.8rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            margin-top: 100px;
         }
     </style>
 </head>
 <body>
-    <img src="ruta/a/tu/imagen.gif" alt="Código QR">
+    <div class="gif-container">
+        <img src="src/escaner.gif" alt="Código QR">
+    </div>
     <p>Escanea El Código QR De Tu Identificación Para Registrar</p>
 </body>
 </html>
