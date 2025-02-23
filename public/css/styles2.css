@@ -1,3 +1,5 @@
+/*aveces le mueves a algo y se cuatrapea todo, en fin la hipotenusa*/
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -147,10 +149,10 @@ body::after {
     padding: 20px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
     gap: 20px;
+    width: 98%;
     justify-items: center;
-    align-items: center;
+    align-items: start;
 }
 
 .card {
@@ -165,6 +167,7 @@ body::after {
     width: 90%;
     height: auto;
     min-height: 150px;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -179,12 +182,31 @@ body::after {
     height: 50px;
 }
 
-.card.card-insumos h3, .card.card-ventas h3, .card.card-empleados h3 {
-    margin-top: auto;
-    font-family: "Georgia", serif;
-    font-style: italic;
-    margin-left: -150px;
-    font-size: 22px;
+.card.card-ventas, .card.card-insumos {
+    grid-column: span 1;
+    width: 90%; 
+}
+
+.card.card-insumos, .card.card-ventas, .card.card-empleados {
+    grid-row: 1;
+}
+
+.card.card-punto-venta, .card.card-pedidos {
+    grid-row: 2;
+}
+
+.card.card-pedidos {
+    grid-column: span 2;
+}
+
+/*Cuando no hay tarjeta de empleados*/
+.allcards.no-empleados {
+    grid-template-columns: repeat(2, 1fr); /* Solo 2 columnas si no hay empleados */
+}
+
+.allcards.no-empleados .card.card-insumos,
+.allcards.no-empleados .card.card-ventas {
+    grid-column: span 1; /* Ambas ocupan la misma cantidad de espacio */
 }
 
 .card.card-punto-venta {
@@ -201,6 +223,14 @@ body::after {
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+
+.card.card-insumos h3, .card.card-ventas h3, .card.card-empleados h3 {
+    margin-top: auto;
+    font-family: "Georgia", serif;
+    font-style: italic;
+    margin-left: -150px;
+    font-size: 22px;
 }
 
 .card.card-punto-venta h3 {
@@ -253,18 +283,6 @@ body::after {
 
 .card.green:hover {
     background-color: #45a049;
-}
-
-.card.card-insumos, .card.card-ventas, .card.card-empleados {
-    grid-row: 1;
-}
-
-.card.card-punto-venta, .card.card-pedidos {
-    grid-row: 2;
-}
-
-.card.card-pedidos {
-    grid-column: span 2;
 }
 
 table {

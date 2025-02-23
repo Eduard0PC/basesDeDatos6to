@@ -24,16 +24,21 @@ app.get('/', (req, res) => {
 // Ruta para validar el login
 app.post('/login', (req, res) => {
     const { usuario, contrasenia } = req.body;
-    const connection = getConnection(); // Abre conexión
+    const connection = getConnection();
 
-    connection.query('SELECT * FROM UsuariosNom WHERE nombre_usuario = ?', [usuario], (error, results) => {
+    connection.query(`
+        SELECT u.id_usuario, u.nombre_usuario, u.contrasenia, r.rol 
+        FROM UsuariosNom u
+        LEFT JOIN UsuariosRol r ON u.id_usuario = r.id_usuario
+        WHERE u.nombre_usuario = ?
+    `, [usuario], (error, results) => {
         if (error) {
-            connection.end(); // Cierra conexión
+            connection.end();
             return res.status(500).json({ success: false, message: 'Error en el servidor' });
         }
 
         if (results.length === 0) {
-            connection.end(); // Cierra conexión
+            connection.end();
             return res.status(401).json({ success: false, message: 'Usuario no encontrado' });
         }
 
@@ -41,18 +46,21 @@ app.post('/login', (req, res) => {
         const contraseñaValida = contrasenia === usuarioDB.contrasenia;
 
         if (!contraseñaValida) {
-            connection.end(); // Cierra conexión
+            connection.end();
             return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
         }
 
+        // Guardar usuario en sesión con su rol
         req.session.user = {
             id: usuarioDB.id_usuario,
-            nombre: usuarioDB.nombre_usuario
+            nombre: usuarioDB.nombre_usuario,
+            rol: usuarioDB.rol || 'Sin rol' 
         };
 
-        connection.end(); // Cierra conexión
+        connection.end();
         res.json({ success: true });
-
+        
+    
          // Cerrar la sesión después de 10 minutos
         setTimeout(() => {
             req.session.destroy((err) => {
@@ -71,7 +79,7 @@ app.get('/usuario', (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ success: false, message: 'No autenticado' });
     }
-    res.json({ success: true, nombre: req.session.user.nombre });
+    res.json({ success: true, nombre: req.session.user.nombre, rol: req.session.user.rol });
 });
 
 //----------------------------------------------------------------------------------------------------------------LOGOUT

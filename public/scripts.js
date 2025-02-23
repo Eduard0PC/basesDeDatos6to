@@ -1,3 +1,5 @@
+//Purikitaka
+
 //FUncionalidad del sidebar
 document.querySelector(".toggle-btn").addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("collapsed");
@@ -10,11 +12,11 @@ function updateDateTime() {
     const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
     const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
 
-    // Obtiene hora y fecha formateadas
+    // Obtiene hora y fecha 
     const currentTime = now.toLocaleTimeString('en-US', timeOptions);
     const currentDate = now.toLocaleDateString('en-US', dateOptions);
 
-    // Actualiza el contenido de los elementos
+    // Actualiza el contenido contenoso
     document.getElementById('current-time').textContent = currentTime;
     document.getElementById('current-date').textContent = currentDate;
 }
@@ -25,7 +27,7 @@ updateDateTime();
 // Actualiza cada segundo
 setInterval(updateDateTime, 1000);
 
-//Muestra el nombre del usuario en la página home
+//MFUNCIONALIDADES DEPENDIENDO DEL ROL DEL USUARIO (ADMIN, USER)
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const response = await fetch('/usuario');
@@ -33,14 +35,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (data.success) {
             const welcomeText = document.getElementById("welcome");
-            const username = data.nombre; // Nombre del usuario
+            const username = data.nombre;
+            const role = data.rol;
 
-            // Muestra el nombre del usuario
-            welcomeText.textContent = `Bienvenido ${username}`;
+            welcomeText.textContent = `Bienvenido ${username} (${role})`;
 
-            // Ajusta la posición del texto según el tamaño del nombre
-            const offset = username.length * 2; 
-            welcomeText.style.marginLeft = -offset + 'px';
+            if (role.toLowerCase() === "user") {
+                // Eliminar "Empleados" del sidebar
+                document.querySelector('li:has(.icon[src="src/empb.png"])')?.remove();
+
+                // Eliminar la tarjeta de empleados
+                const empleadoCard = document.querySelector('.card-empleados');
+                const allcards = document.querySelector(".allcards");
+
+                if (empleadoCard) {
+                    empleadoCard.remove();
+
+                    setTimeout(() => {
+                        allcards.classList.add("no-empleados"); // Aplica la estructura de grid
+                    }, 50);
+                }
+            }
         } else {
             window.location.href = '/';
         }
@@ -49,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = '/';
     }
 });
+
 
 //MANEJO DEL BOTON DE CERRAR SESION
 document.getElementById('logoutBtn').addEventListener('click', async () => {
