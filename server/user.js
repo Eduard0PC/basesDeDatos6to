@@ -20,7 +20,7 @@ router.get('/usuario', authMiddleware, (req, res) => {
 
 // Ruta protegida para la página home
 router.get('/home', authMiddleware, (req, res) => {
-    console.log('Chaval logeado:', req.session.user);
+    console.log('Fulano que entro:', req.session.user);
     res.sendFile(path.join(__dirname, '..', 'public', 'home.html'));
 });
 

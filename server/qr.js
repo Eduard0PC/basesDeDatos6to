@@ -1,5 +1,4 @@
 
-
 // PARA EL MANEJO DEL QR (NO IMPLEMENTADO EN EL FRONTEND)
 //npm install qrcode
 
