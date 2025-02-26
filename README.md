@@ -1,9 +1,15 @@
-# Proyecto Base de datos, restaurante Han-Burguesa
+# Proyecto Base de datos. Restaurante Han-Burguesa
+***
+**FUNCIONALIDADES FALTANTES**
+- BOTON EMPLEADOS
+- BOTON INSUMOS
+- BOTON VENTAS
+- FUNCIONALIDAD QR
 ***
 ## **NOTAS**
 - *FAVOR DE NO ELIMINAR O CAMBIAR EL ARCHIVO DB.JS*
 - *EL ARCHIVO QR.JS NO EStA BIEN IMPLEMENTADO AUN*
-****
+***
 Comandos SQL ara creación de tablas:
 
 - TABLA USUARIOSNOM:
@@ -48,7 +54,7 @@ CREATE TABLE Alimentos (
     precio NUMERIC(8,2) NOT NULL
 );
 ````
-- TABLA PEDIDODETALLES
+- TABLA PEDIDODETALLES:
 ````
 CREATE TABLE PedidoDetalles (
     id_pedido VARCHAR(12) PRIMARY KEY,
@@ -69,7 +75,7 @@ CREATE TABLE Pedidos (
     CONSTRAINT fk_idalimento FOREIGN KEY (id_alimento) REFERENCES Alimentos(id_alimento)
 );
 ````
-- TABLA REGISTROHORARIO
+- TABLA REGISTROHORARIO:
 ````
 CREATE TABLE RegistroHorario (
   id_registro INT AUTO_INCREMENT PRIMARY KEY, 
