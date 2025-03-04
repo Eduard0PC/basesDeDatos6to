@@ -98,3 +98,8 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
         alert('Error al cerrar sesión');
     }
 });
+
+//MANEJO DE LA CARD EMPLEADOS
+document.getElementById('empCard').addEventListener('click', async () => {
+    console.log("HolaMundo");
+});
