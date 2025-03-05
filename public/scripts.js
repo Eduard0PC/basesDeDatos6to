@@ -1,4 +1,5 @@
-//Purikitaka
+import { loadEmployees } from './loader.js';
+//Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
 document.querySelector(".toggle-btn").addEventListener("click", function () {
@@ -100,6 +101,4 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 });
 
 //MANEJO DE LA CARD EMPLEADOS
-document.getElementById('empCard').addEventListener('click', async () => {
-    console.log("HolaMundo");
-});
+document.getElementById('empCard').addEventListener('click', loadEmployees);
