@@ -1,4 +1,4 @@
-import { loadEmployees } from './loader.js';
+import { backtoHome, loadEmployees } from './loader.js';
 //Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
@@ -83,6 +83,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = '/';
     }
 });
+//MANEJO DEL BOTON HOME
+document.getElementById('homeBtn').addEventListener('click', backtoHome);
 
 //MANEJO DEL BOTON EMPLEADOS
 document.getElementById('empleadosBtn').addEventListener('click', loadEmployees);

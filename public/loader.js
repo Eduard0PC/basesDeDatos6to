@@ -1,11 +1,20 @@
+//Regresar a Home
+export async function backtoHome(){
+    hideComponent(".table-gen");
+    showComponent(".card-insumos");
+    showComponent(".card-ventas");
+    showComponent(".card-empleados");
+    showComponent(".card-pedidos");
+    showComponent(".card-punto-venta");
+}
 //Elimina todas las cartas y carga la tabla
 export async function loadEmployees(){
     //FASE 1: Borra
-    removeComponent(".card-insumos");
-    removeComponent(".card-ventas");
-    removeComponent(".card-empleados");
-    removeComponent(".card-pedidos");
-    removeComponent(".card-punto-venta");
+    hideComponent(".card-insumos");
+    hideComponent(".card-ventas");
+    hideComponent(".card-empleados");
+    hideComponent(".card-pedidos");
+    hideComponent(".card-punto-venta");
     //FASE 2: Carga
     const destiny_load = document.querySelector('.table-gen');
     fetch("table.html")
@@ -28,10 +37,16 @@ export async function loadEmployees(){
         })
         .catch(error=>console.error("Error al cargar contenido: ", error));
 }
-//AKA Component Terminator
-function removeComponent(componentname){
+//AKA Component birthmaker - Buffed
+function showComponent(componentname){
     const component = document.querySelector(componentname);
-    component.remove();
+    component.style.display="flex";
+}
+
+//AKA Component Terminator - Nerfed
+function hideComponent(componentname){
+    const component = document.querySelector(componentname);
+    component.style.display = "none";
 }
 function generateTable(title, header, data){
     //Buscar en table.html
