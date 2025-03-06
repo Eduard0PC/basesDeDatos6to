@@ -13,11 +13,11 @@ router.get('/', (req, res) => {
 router.post('/see-empleados', (req, res) => {
     const connection = getConnection();
     connection.query(`
-        SELECT u.nombre_usuario, u.contrasenia, r.rol 
+        SELECT u.id_usuario, u.nombre_usuario, u.contrasenia, r.rol 
         FROM UsuariosNom u, UsuariosRol r 
         WHERE u.id_usuario=r.id_usuario`,
         (error, results)=>{
-        res.json({title: "Control de empleados", header:["Nombre", "Contraseña", "Rol"], dbresults: results});
+        res.json({title: "Control de empleados", header:["ID del sistema","Nombre", "Contraseña", "Rol"], dbresults: results});
         connection.end();
     });
 });

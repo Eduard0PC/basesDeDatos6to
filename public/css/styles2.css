@@ -179,6 +179,26 @@ body::after {
     align-items: center;
 }
 
+.card-table {
+    position: relative;
+    background-color: #ebebeb;
+    color: #000000;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.2s;
+    width: 95%;
+    margin: auto;
+    height: auto;
+    min-height: 150px;
+    min-width: 250px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .card-icon {
     position: absolute;
     top: 10px;
@@ -301,6 +321,10 @@ table, th, td {
 th, td {
     padding: 10px;
     text-align: left;
+}
+
+th {
+    background-color: #c5c5c5;
 }
 
 .footer {

@@ -84,6 +84,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+//MANEJO DEL BOTON EMPLEADOS
+document.getElementById('empleadosBtn').addEventListener('click', loadEmployees);
 
 //MANEJO DEL BOTON DE CERRAR SESION
 document.getElementById('logoutBtn').addEventListener('click', async () => {

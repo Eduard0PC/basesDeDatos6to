@@ -23,6 +23,8 @@ export async function loadEmployees(){
         .then(info=>{
             //Carga la información de la tabla
             generateTable(info.title, info.header, info.dbresults);
+            //Mostrar
+            destiny_load.style.display="flex";
         })
         .catch(error=>console.error("Error al cargar contenido: ", error));
 }
