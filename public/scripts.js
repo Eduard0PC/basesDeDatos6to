@@ -1,4 +1,4 @@
-import { backtoHome, loadEmployees } from './loader.js';
+import { backtoHome, loadEmployees, loadOrders } from './loader.js';
 //Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
@@ -103,6 +103,9 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
         alert('Error al cerrar sesión');
     }
 });
+
+//CARGA DE LA CARD PEDIDOS
+loadOrders();
 
 //MANEJO DE LA CARD EMPLEADOS
 document.getElementById('empCard').addEventListener('click', loadEmployees);

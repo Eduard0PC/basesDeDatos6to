@@ -7,6 +7,27 @@ export async function backtoHome(){
     showComponent(".card-pedidos");
     showComponent(".card-punto-venta");
 }
+//Carga pedidos
+export async function loadOrders(){
+    const destiny_load = document.querySelector('.card-pedidos');
+    fetch("table.html")
+    .then(response =>{
+        if(response.ok){
+            return response.text();
+        }
+    })
+    .then(data=>{
+        //Carga la plantilla
+        destiny_load.innerHTML=data;
+        //Contacto con la base de datos
+        return connect('/see-pedidos');
+    })
+    .then(info=>{
+        //Carga la información de la tabla
+        generateTable(info.title, info.header, info.dbresults);
+    })
+    .catch(error=>console.error("Error al cargar el contenido: ", error));
+}
 //Elimina todas las cartas y carga la tabla
 export async function loadEmployees(){
     //FASE 1: Borra

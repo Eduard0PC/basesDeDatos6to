@@ -9,6 +9,19 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'home.html'));
 });
 
+//ver los pedidos más recientes
+router.post('/see-pedidos', (req, res)=>{
+    const connection = getConnection();
+    connection.query(`
+        SELECT *
+        FROM PedidoDetalles 
+        ORDER BY hora_pedido
+        LIMIT 5`,
+        (error, results)=>{
+        res.json({title: "Pedidos en Curso", header:["ID Pedido","Cliente", "Hora"], dbresults: results});
+        connection.end();
+    });
+});
 //ver todos los empleados con rol
 router.post('/see-empleados', (req, res) => {
     const connection = getConnection();
