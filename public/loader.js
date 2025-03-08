@@ -1,5 +1,6 @@
-let aborter = new AbortController();
-//Funcion asegurar carga
+//Utilidades
+let aborter = new AbortController(); //Para 'transacciones' en tablas
+//Funcion asegurar carga - posiblemente a deprecarse
 export function garantLoad(func){
     clearTable();
     func();
@@ -61,9 +62,25 @@ export async function loadEmployees(){
             //Carga la información de la tabla
             //console.log(info);
             generateTable(info.title, info.header, info.dbresults);
-            addtableFeat("Acciones");
+            addtableFeat(addActionEmployees,"Acciones");
             //Mostrar
             destiny_load.style.display="flex";
+        })
+        .catch(error=>console.error("Error al cargar contenido: ", error));
+}
+//Cargar botones de see-empleados
+async function addActionEmployees(){
+    const actions = document.createElement("div");
+    return fetch("buttons.html")
+        .then(response => {
+            if(response.ok){
+                return response.text();
+            }
+        })
+        .then(data=>{
+            actions.innerHTML=data;
+            const target = actions.querySelector('.button-mesh-emp-control');
+            return target.cloneNode(true);
         })
         .catch(error=>console.error("Error al cargar contenido: ", error));
 }
@@ -116,13 +133,26 @@ function generateTable(title, header, data){
     destiny_load2.appendChild(tableb);
 }
 //Poner columna adicional y funcionalidad custom
-function addtableFeat(head){
-    //Buscar en table html
+function addtableFeat(func, headtitle){
+    //Buscar en table.html
     const destiny_load = document.querySelector('.sys-table');
-    console.log(destiny_load);
     const thd = destiny_load.querySelector('thead');
     const tbd = destiny_load.querySelector('tbody');
-    console.log(thd.rows);
+    
+    //Crear elementos
+    const newth = document.createElement("th"); //Nuevo encabezado
+    newth.textContent=headtitle; //Set titulo
+    thd.rows[0].appendChild(newth); //Añadir encabezado a la tabla
+    Object.values(tbd.rows).forEach(r =>{
+        const newbd = document.createElement("td"); //Nuevo espacio
+        //Buscar en la funcionalidad
+        func().then(feat=>{
+            if (feat){
+                newbd.appendChild(feat);
+                r.appendChild(newbd); //Añadir espacios a la tabla
+            }
+        });
+    });
 }
 //Función general para sacar la información de un método
 async function connect(jmethod){
