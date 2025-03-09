@@ -109,3 +109,5 @@ loadOrders();
 
 //MANEJO DE LA CARD EMPLEADOS
 document.getElementById('empCard').addEventListener('click', ()=>(garantLoad(loadEmployees)));
+
+//MANEJO BOTONES

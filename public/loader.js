@@ -62,14 +62,15 @@ export async function loadEmployees(){
             //Carga la información de la tabla
             //console.log(info);
             generateTable(info.title, info.header, info.dbresults);
-            addtableFeat(addActionEmployees,"Acciones");
+            addtableFeat(()=>(addActions('.button-mesh-emp-control')),"Acciones");
+            generateActionsFooter('.test');
             //Mostrar
             destiny_load.style.display="flex";
         })
         .catch(error=>console.error("Error al cargar contenido: ", error));
 }
-//Cargar botones de see-empleados
-async function addActionEmployees(){
+//Añadir botones
+async function addActions(button){
     const actions = document.createElement("div");
     return fetch("buttons.html")
         .then(response => {
@@ -79,7 +80,7 @@ async function addActionEmployees(){
         })
         .then(data=>{
             actions.innerHTML=data;
-            const target = actions.querySelector('.button-mesh-emp-control');
+            const target = actions.querySelector(button);
             return target.cloneNode(true);
         })
         .catch(error=>console.error("Error al cargar contenido: ", error));
@@ -152,6 +153,15 @@ function addtableFeat(func, headtitle){
                 r.appendChild(newbd); //Añadir espacios a la tabla
             }
         });
+    });
+}
+//Cargar botones para el footer de la tabla
+function generateActionsFooter(actions){
+    const destiny_load = document.querySelector('.sys-actions-footbar');
+    addActions(actions).then(acts=>{
+        if (acts){
+            destiny_load.appendChild(acts);
+        }   
     });
 }
 //Función general para sacar la información de un método
