@@ -38,52 +38,52 @@ export async function loadOrders(){
 }
 //Elimina todas las cartas y carga la tabla
 export async function loadEmployees(){
-    //FASE 1: Borra
+    //FASE 1: BORRA
     hideComponent(".card-insumos");
     hideComponent(".card-ventas");
     hideComponent(".card-empleados");
     hideComponent(".card-pedidos");
     hideComponent(".card-punto-venta");
-    //FASE 2: Carga
-    const destiny_load = document.querySelector('.table-gen');
-    fetch("table.html")
-        .then(response => {
-            if(response.ok){
-                return response.text();
-            }
-        })
-        .then(data=>{
-            //Carga la plantilla
-            destiny_load.innerHTML=data;
-            //Contacto con la base de datos
-            return connect('/see-empleados');
-        })
-        .then(info=>{
-            //Carga la información de la tabla
-            //console.log(info);
-            generateTable(info.title, info.header, info.dbresults);
-            addtableFeat(()=>(addActions('.button-mesh-emp-control')),"Acciones");
-            generateActionsFooter('.test');
-            //Mostrar
-            destiny_load.style.display="flex";
-        })
-        .catch(error=>console.error("Error al cargar contenido: ", error));
+    //FASE 2: CARGA
+    try{
+        const destiny_load = document.querySelector('.table-gen');
+        //Carga la plantilla
+        const response = await fetch("table.html");
+        if(response.ok){
+            destiny_load.innerHTML= await response.text();
+        }
+        //Contacto con la base de datos
+        const info = await connect('/see-empleados');
+        //Genera la tabla con el contenido
+        generateTable(info.title, info.header, info.dbresults);
+        generateActionsFooter('.test');
+        await addtableFeat('.button-mesh-emp-control',"Acciones");
+        addEventsEmployees();
+        destiny_load.style.display="flex";
+    }catch (error){
+        console.error("Error al cargar contenido: ", error);
+    }
 }
 //Añadir botones
 async function addActions(button){
-    const actions = document.createElement("div");
-    return fetch("buttons.html")
-        .then(response => {
-            if(response.ok){
-                return response.text();
-            }
-        })
-        .then(data=>{
-            actions.innerHTML=data;
-            const target = actions.querySelector(button);
-            return target.cloneNode(true);
-        })
-        .catch(error=>console.error("Error al cargar contenido: ", error));
+    try{
+        const actions = document.createElement("div");
+        const response = await fetch("buttons.html");
+        if(response.ok){
+            actions.innerHTML = await response.text();
+        }
+        const target = actions.querySelector(button);
+        return target.cloneNode(true);
+    }catch(error){
+        console.error("Error al cargar contenido: ", error);
+    }
+}
+function addEventsEmployees(){
+    const btn1 = document.querySelectorAll('.button-mesh-emp-control');
+    console.log(btn1);
+    if (btn1){
+        //btn1[0].addEventListener('click', ()=>(console.log("Jijija")));
+    }
 }
 //FUNCIONES DE COMPONENTES
 //AKA Component birthmaker - Buffed
@@ -134,7 +134,7 @@ function generateTable(title, header, data){
     destiny_load2.appendChild(tableb);
 }
 //Poner columna adicional y funcionalidad custom
-function addtableFeat(func, headtitle){
+async function addtableFeat(actions, headtitle){
     //Buscar en table.html
     const destiny_load = document.querySelector('.sys-table');
     const thd = destiny_load.querySelector('thead');
@@ -144,16 +144,15 @@ function addtableFeat(func, headtitle){
     const newth = document.createElement("th"); //Nuevo encabezado
     newth.textContent=headtitle; //Set titulo
     thd.rows[0].appendChild(newth); //Añadir encabezado a la tabla
-    Object.values(tbd.rows).forEach(r =>{
+    //Uso este for en lugar del ForEach para que tenga que esperar
+    for(const r of tbd.rows){
         const newbd = document.createElement("td"); //Nuevo espacio
-        //Buscar en la funcionalidad
-        func().then(feat=>{
-            if (feat){
-                newbd.appendChild(feat);
-                r.appendChild(newbd); //Añadir espacios a la tabla
-            }
-        });
-    });
+        const feat = await addActions(actions);
+        newbd.appendChild(feat);
+        r.appendChild(newbd)
+    }
+    //Aterrizar para que la función espere
+    return "Terminado";
 }
 //Cargar botones para el footer de la tabla
 function generateActionsFooter(actions){
