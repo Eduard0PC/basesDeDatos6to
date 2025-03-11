@@ -1,4 +1,4 @@
-import { backtoHome, loadEmployees } from './loader.js';
+import { garantLoad, backtoHome, loadEmployees, loadOrders } from './loader.js';
 //Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
@@ -84,10 +84,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 //MANEJO DEL BOTON HOME
-document.getElementById('homeBtn').addEventListener('click', backtoHome);
+document.getElementById('homeBtn').addEventListener('click', ()=>(garantLoad(backtoHome)));
 
 //MANEJO DEL BOTON EMPLEADOS
-document.getElementById('empleadosBtn').addEventListener('click', loadEmployees);
+document.getElementById('empleadosBtn').addEventListener('click', ()=>(garantLoad(loadEmployees)));
 
 //MANEJO DEL BOTON DE CERRAR SESION
 document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -104,5 +104,10 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     }
 });
 
+//CARGA DE LA CARD PEDIDOS
+loadOrders();
+
 //MANEJO DE LA CARD EMPLEADOS
-document.getElementById('empCard').addEventListener('click', loadEmployees);
+document.getElementById('empCard').addEventListener('click', ()=>(garantLoad(loadEmployees)));
+
+//MANEJO BOTONES
