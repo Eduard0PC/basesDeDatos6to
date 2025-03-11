@@ -21,6 +21,31 @@ router.post('/see-empleados', (req, res) => {
         connection.end();
     });
 });
+
+//ver todas las ventas
+router.post('/see-ventas', (req, res) => {
+    const connection = getConnection();
+    connection.query(`
+        SELECT id_pedido, id_alimento, total_pedido 
+        FROM Pedidos`,
+        (error, results)=>{
+        res.json({title: "Control de ventas", header:["ID del sistema","ID del alimento", "total del pedido"], dbresults: results});
+        connection.end();
+    });
+});
+
+//ver todos los insumos
+router.post('/see-insumos', (req, res) => {
+    const connection = getConnection();
+    connection.query(`
+        SELECT id_insumo, nombre_insumo, unidad_medida 
+        FROM Insumos`,
+        (error, results)=>{
+        res.json({title: "Control de insumos", header:["ID del sistema","Nombre", "Unidad de medida"], dbresults: results});
+        connection.end();
+    });
+});
+
 //Funciones macros
 
 module.exports = router;

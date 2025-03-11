@@ -37,6 +37,69 @@ export async function loadEmployees(){
         })
         .catch(error=>console.error("Error al cargar contenido: ", error));
 }
+
+//Elimina todas las cartas y carga la tabla
+export async function loadEntras(){
+    //FASE 1: Borra
+    hideComponent(".card-insumos");
+    hideComponent(".card-ventas");
+    hideComponent(".card-empleados");
+    hideComponent(".card-pedidos");
+    hideComponent(".card-punto-venta");
+    //FASE 2: Carga
+    const destiny_load = document.querySelector('.table-gen');
+    fetch("table.html")
+        .then(response => {
+            if(response.ok){
+                return response.text();
+            }
+        })
+        .then(data=>{
+            //Carga la plantilla
+            destiny_load.innerHTML=data;
+            //Contacto con la base de datos
+            return connect('/see-ventas');
+        })
+        .then(info=>{
+            //Carga la información de la tabla
+            generateTable(info.title, info.header, info.dbresults);
+            //Mostrar
+            destiny_load.style.display="flex";
+        })
+        .catch(error=>console.error("Error al cargar contenido: ", error));
+}
+
+//Elimina todas las cartas y carga la tabla
+export async function loadFood(){
+    //FASE 1: Borra
+    hideComponent(".card-insumos");
+    hideComponent(".card-ventas");
+    hideComponent(".card-empleados");
+    hideComponent(".card-pedidos");
+    hideComponent(".card-punto-venta");
+    //FASE 2: Carga
+    const destiny_load = document.querySelector('.table-gen');
+    fetch("table.html")
+        .then(response => {
+            if(response.ok){
+                return response.text();
+            }
+        })
+        .then(data=>{
+            //Carga la plantilla
+            destiny_load.innerHTML=data;
+            //Contacto con la base de datos
+            return connect('/see-insumos');
+        })
+        .then(info=>{
+            //Carga la información de la tabla
+            generateTable(info.title, info.header, info.dbresults);
+            //Mostrar
+            destiny_load.style.display="flex";
+        })
+        .catch(error=>console.error("Error al cargar contenido: ", error));
+}
+
 //AKA Component birthmaker - Buffed
 function showComponent(componentname){
     const component = document.querySelector(componentname);

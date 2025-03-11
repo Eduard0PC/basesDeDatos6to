@@ -16,7 +16,7 @@ router.post('/login', (req, res) => {
     const { usuario, contrasenia } = req.body;
     const connection = getConnection();
     //Depuración para conexión de base de datos
-    /*
+    
     connection.connect((err)=>{
         if(err){
             console.error('Error de conexión a la base de datos', err);
@@ -24,7 +24,7 @@ router.post('/login', (req, res) => {
             console.error('Conexión exitosa');
         }
     });
-    */
+    
     connection.query(`
         SELECT u.id_usuario, u.nombre_usuario, u.contrasenia, r.rol 
         FROM UsuariosNom u
