@@ -1,0 +1,19 @@
+#msg-handler {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 4px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0;
+    display: none;
+    /*Cinematic*/
+    transition: opacity 0.2s;
+}
+#msg-handler::after {
+    content: "";
+    position: absolute;
+    transform: translateY(-50%);
+    left: 100%;
+    transition: opacity 0.2s ease-in-out;
+}
