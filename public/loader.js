@@ -208,7 +208,7 @@ function findInfoinRow(button, headerName=null, colIndex=null){
     return null;
 }
 //OTRAS COSAS
-//Cargar botones para el footer de la tabla
+//Cargar botones para el footer de la tabla - NO TERMINADO
 async function generateActionsFooter(actions){
     const destiny_load = document.querySelector('.sys-actions-footbar');
     const feat = await addActions(actions);

@@ -36,6 +36,7 @@ router.post('/see-empleados', (req, res) => {
         connection.end();
     });
 });
+//Eliminar un usuario
 router.post('/delete-user', async (req, res)=> {
     const { id } = req.body;
     const cid = Number([id]);
