@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const { getConnection } = require('./db');
 const path = require('path');
+const util = require('util');
+
 // Página principal
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'home.html'));
@@ -33,6 +35,28 @@ router.post('/see-empleados', (req, res) => {
         res.json({title: "Control de empleados", header:["ID del sistema","Nombre", "Contraseña", "Rol"], dbresults: results});
         connection.end();
     });
+});
+router.post('/delete-user', async (req, res)=> {
+    const { id } = req.body;
+    const cid = Number([id]);
+    const connection = getConnection();
+    const query = util.promisify(connection.query).bind(connection)
+    try{
+        const q2 = await query(
+            `DELETE FROM UsuariosRol
+            WHERE id_usuario = ? `
+            , cid);
+        const q1 = await query(
+            `DELETE FROM UsuariosNom
+            WHERE id_usuario = ? `
+            , cid);
+        res.json({message: "Usuario eliminado"});
+    } catch (error) {
+        console.error("Error al eliminar usuario:", error);
+        res.status(500).json({ error: "Error al eliminar usuario" });
+    } finally {
+        connection.end();
+    }
 });
 //Funciones macros
 

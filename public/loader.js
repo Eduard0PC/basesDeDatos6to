@@ -1,6 +1,6 @@
 //Utilidades
 let aborter = new AbortController(); //Para 'transacciones' en tablas
-//Funcion asegurar carga - posiblemente a deprecarse
+//Funcion asegurar carga
 export function garantLoad(func){
     clearTable();
     func();
@@ -56,13 +56,23 @@ export async function loadEmployees(){
         const info = await connect('/see-empleados');
         //Genera la tabla con el contenido
         generateTable(info.title, info.header, info.dbresults);
-        generateActionsFooter('.test');
+        //Espero la carga de botones
+        await generateActionsFooter('.test');
         await addtableFeat('.button-mesh-emp-control',"Acciones");
+        //Añado eventos
         addEventsEmployees();
         destiny_load.style.display="flex";
     }catch (error){
         console.error("Error al cargar contenido: ", error);
     }
+}
+//Elimina usuarios - Funcion inestable
+async function deleteUser(button) {
+    const info = findInfoinRow(button, "ID del sistema");
+    const format = {id: info};
+    await connectnSubmit('/delete-user', format);
+    //Recarga
+    loadEmployees();
 }
 //Añadir botones
 async function addActions(button){
@@ -78,12 +88,20 @@ async function addActions(button){
         console.error("Error al cargar contenido: ", error);
     }
 }
+//FUNCIONES DE EVENTOS ADICIONALES
 function addEventsEmployees(){
-    const btn1 = document.querySelectorAll('.button-mesh-emp-control');
-    console.log(btn1);
-    if (btn1){
-        //btn1[0].addEventListener('click', ()=>(console.log("Jijija")));
-    }
+    const btn1 = document.querySelectorAll("#empDelete");
+    const btn2 = document.querySelectorAll("#empQR");
+    btn1.forEach(btn=>{
+        btn.addEventListener('click', ()=>(deleteUser(btn)));
+        btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
+        btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
+    });
+    btn2.forEach(btn=>{
+        btn.addEventListener('click', ()=>(console.log('Tonoto')));
+        btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
+        btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
+    })
 }
 //FUNCIONES DE COMPONENTES
 //AKA Component birthmaker - Buffed
@@ -96,11 +114,24 @@ function hideComponent(componentname){
     const component = document.querySelector(componentname);
     component.style.display = "none";
 }
+//Muestra mensajes
+function showMSG(button, handler){
+    const tooltip = document.getElementById(handler);
+    const coors = button.getBoundingClientRect();
+    tooltip.textContent=button.dataset.msg;
+    tooltip.style.opacity=1;
+    tooltip.style.display="flex";
+}
+//Esconde mensajes
+function hideMSG(handler){
+    const tooltip = document.getElementById(handler);
+    tooltip.style.opacity=0;
+    tooltip.style.display="none";
+}
 //FUNCIONES TABLAS
 //Limpiar tabla
 function clearTable(){
     const destiny_load = document.querySelector('.table-gen');
-    //console.log(destiny_load);
     destiny_load.innerHTML='';
 } 
 //Generar tabla
@@ -154,14 +185,35 @@ async function addtableFeat(actions, headtitle){
     //Aterrizar para que la función espere
     return "Terminado";
 }
+function findInfoinRow(button, headerName=null, colIndex=null){
+    const locrow=button.closest("tr");
+    const cells=locrow.querySelectorAll("td");
+    if(colIndex!=null && colIndex<cells.lenght){
+        return cells[colIndex].textContent.trim();
+    }
+    if(headerName!=null){
+        const table = locrow.closest("table");
+        const headers = table.querySelectorAll("th");
+        //Inicializar
+        let index = -1;
+        headers.forEach((th, i) => {
+            if (th.textContent.trim() === headerName) {
+                index = i;
+            }
+        });
+        if (index !== -1) {
+            return cells[index].textContent.trim();
+        }
+    }
+    return null;
+}
+//OTRAS COSAS
 //Cargar botones para el footer de la tabla
-function generateActionsFooter(actions){
+async function generateActionsFooter(actions){
     const destiny_load = document.querySelector('.sys-actions-footbar');
-    addActions(actions).then(acts=>{
-        if (acts){
-            destiny_load.appendChild(acts);
-        }   
-    });
+    const feat = await addActions(actions);
+    destiny_load.appendChild(feat);
+    return "Terminado";
 }
 //Función general para sacar la información de un método
 async function connect(jmethod){
@@ -173,6 +225,25 @@ async function connect(jmethod){
         const response = await fetch(jmethod,{
             method: 'POST',
             headers: {'Content-Type':'application/json'},
+            signal: aborter.signal
+        });
+        const data = await response.json();
+        return data;
+    }catch (error){
+        if (error=='AbortError'){console.log("Solicitud cancelada")}
+    }
+}
+//Función para una 'transacción'
+async function connectnSubmit(jmethod, info){
+    //Cancelo la solicitud anterior
+    aborter.abort();
+    //Reinicio el abortador
+    try{
+        aborter = new AbortController();
+        const response = await fetch(jmethod,{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(info),
             signal: aborter.signal
         });
         const data = await response.json();
