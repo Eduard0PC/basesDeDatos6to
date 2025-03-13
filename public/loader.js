@@ -74,6 +74,32 @@ async function deleteUser(button) {
     //Recarga
     loadEmployees();
 }
+//Genera QR
+async function generateQR(button) {
+    const idEmpleado = findInfoinRow(button, "ID del sistema"); // Obtiene el ID de la fila
+    if (!idEmpleado) return alert("No se pudo obtener el ID del empleado");
+
+    try {
+        const response = await fetch('/generate-qr', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: idEmpleado })
+        });
+
+        const data = await response.json();
+        if (data.qrCode) {
+            // Crear y mostrar la imagen del QR en un contenedor
+            const qrContainer = document.getElementById("qr-container"); 
+            const qrImage = document.getElementById("qr-image");
+            qrImage.src = data.qrCode;  // Asigna la URL del QR a una imagen
+            qrContainer.style.display = "flex"; //cosillas de CSS (aaaaaaaaaaaaaaaaaah)
+        } else {
+            alert("Error al generar el QR");
+        }
+    } catch (error) {
+        console.error("Error al obtener el QR:", error);
+    }
+}
 //Añadir botones
 async function addActions(button){
     try{
@@ -98,7 +124,7 @@ function addEventsEmployees(){
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     });
     btn2.forEach(btn=>{
-        btn.addEventListener('click', ()=>(console.log('Tonoto')));
+        btn.addEventListener('click', ()=>(generateQR(btn)));
         btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     })
