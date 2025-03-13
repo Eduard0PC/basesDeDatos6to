@@ -11,17 +11,16 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'home.html'));
 });
 
-//------------------------------------CONSULTAS DE EMPLEADOS------------------------------------
-
+//----------------------------------------CONSULTAS DE EMPLEADOS-------------------------------------------
 //ver todos los empleados con rol
 router.post('/see-empleados', (req, res) => {
     const connection = getConnection();
     connection.query(`
-        SELECT u.id_usuario, u.nombre_usuario, u.contrasenia, r.rol 
+        SELECT u.id_usuario, u.nombre_usuario, u.contrasenia, u.h_entrada, u.h_salida, r.rol 
         FROM UsuariosNom u, UsuariosRol r 
         WHERE u.id_usuario=r.id_usuario`,
         (error, results)=>{
-        res.json({title: "Control de empleados", header:["ID del sistema","Nombre", "Contraseña", "Rol"], dbresults: results});
+        res.json({title: "Control de empleados", header:["ID del sistema","Nombre", "Contraseña", "Horario de entrada", "Horario de salida", "Rol"], dbresults: results});
         connection.end();
     });
 });
@@ -50,8 +49,7 @@ router.post('/delete-user', async (req, res)=> {
     }
 });
 
-//------------------------------------CONSULTAS DE VENTAS/PEDIDOS------------------------------------
-
+//-----------------------------------------CONSULTAS DE VENTAS---------------------------------------------
 //ver todas las ventas
 router.post('/see-ventas', (req, res) => {
     const connection = getConnection();
@@ -64,6 +62,7 @@ router.post('/see-ventas', (req, res) => {
     });
 });
 
+//-----------------------------------------CONSULTAS DE PEDIDOS-------------------------------------------
 //ver los pedidos más recientes
 router.post('/see-pedidos', (req, res)=>{
     const connection = getConnection();
@@ -78,6 +77,7 @@ router.post('/see-pedidos', (req, res)=>{
     });
 });
 
+//-------------------------------------------CONSULTAS INSUMOS---------------------------------------------
 //ver todos los insumos
 router.post('/see-insumos', (req, res) => {
     const connection = getConnection();

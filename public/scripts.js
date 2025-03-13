@@ -1,4 +1,4 @@
-import { backtoHome, loadEmployees, loadEntras, loadFood, loadOrders } from './loader.js';
+import { backtoHome, loadEmployees, loadSales, loadFood, loadOrders } from './loader.js';
 //Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
@@ -90,7 +90,7 @@ document.getElementById('homeBtn').addEventListener('click', backtoHome);
 document.getElementById('empleadosBtn').addEventListener('click', loadEmployees);
 
 //MANEJO DEL BOTON VENTAS
-document.getElementById('ventasBtn').addEventListener('click', loadEntras);
+document.getElementById('ventasBtn').addEventListener('click', loadSales);
 
 //MANEJO DEL BOTON INSUMOS
 document.getElementById('insumosBtn').addEventListener('click', loadFood);
@@ -116,8 +116,8 @@ loadOrders();
 //MANEJO DE LA CARD EMPLEADOS
 document.getElementById('empCard').addEventListener('click', loadEmployees);
 
-//MANEJO DE LA CARD EMPLEADOS
-document.getElementById('venCard').addEventListener('click', loadEntras);
+//MANEJO DE LA CARD VENTAS
+document.getElementById('venCard').addEventListener('click', loadSales);
 
-//MANEJO DE LA CARD EMPLEADOS
+//MANEJO DE LA CARD INSUMOS
 document.getElementById('insCard').addEventListener('click', loadFood);

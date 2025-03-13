@@ -71,7 +71,7 @@ export async function loadEmployees(){
 }
 
 //Elimina todas las cartas y carga la tabla
-export async function loadEntras(){
+export async function loadSales(){
     //FASE 1: Borra
     hideComponent(".card-insumos");
     hideComponent(".card-ventas");
@@ -165,7 +165,7 @@ function addEventsEmployees(){
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     })
 }
-
+//Muestra mensajes
 function showMSG(button, handler){
     const tooltip = document.getElementById(handler);
     const coors = button.getBoundingClientRect();
@@ -197,6 +197,7 @@ function hideComponent(componentname){
     const component = document.querySelector(componentname);
     component.style.display = "none";
 }
+//Generar tabla
 function generateTable(title, header, data){
     //Buscar en table.html
     const destiny_load1 = document.querySelector('.table-title');
@@ -226,7 +227,7 @@ function generateTable(title, header, data){
     });
     destiny_load2.appendChild(tableb);
 }
-
+//Poner columna adicional y funcionalidad custom
 async function addtableFeat(actions, headtitle){
     //Buscar en table.html
     const destiny_load = document.querySelector('.sys-table');
@@ -247,7 +248,7 @@ async function addtableFeat(actions, headtitle){
     //Aterrizar para que la función espere
     return "Terminado";
 }
-
+//Encuentra un data según el boton, encabezado/columna
 function findInfoinRow(button, headerName=null, colIndex=null){
     const locrow=button.closest("tr");
     const cells=locrow.querySelectorAll("td");
@@ -270,14 +271,14 @@ function findInfoinRow(button, headerName=null, colIndex=null){
     }
     return null;
 }
-
+//OTRAS COSAS
+//Cargar botones para el footer de la tabla
 async function generateActionsFooter(actions){
     const destiny_load = document.querySelector('.sys-actions-footbar');
     const feat = await addActions(actions);
     destiny_load.appendChild(feat);
     return "Terminado";
 }
-
 //Función general para sacar la información de un método
 async function connect(jmethod){
     //Cancelo la solicitud anterior
@@ -296,7 +297,7 @@ async function connect(jmethod){
         if (error=='AbortError'){console.log("Solicitud cancelada")}
     }
 }
-
+//Función para entregar datos y ejecutar un método
 async function connectnSubmit(jmethod, info){
     //Cancelo la solicitud anterior
     aborter.abort();
