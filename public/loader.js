@@ -1,5 +1,6 @@
 //Utilidades
 let aborter = new AbortController(); //Para 'transacciones' en tablas
+
 //Funcion asegurar carga
 export function garantLoad(func){
     clearTable();
@@ -70,7 +71,7 @@ export async function loadEmployees(){
     }
 }
 
-//Elimina todas las cartas y carga la tabla
+//Carga ventas
 export async function loadSales(){
     //FASE 1: Borra
     hideComponent(".card-insumos");
@@ -101,7 +102,7 @@ export async function loadSales(){
         .catch(error=>console.error("Error al cargar contenido: ", error));
 }
 
-//Elimina todas las cartas y carga la tabla
+//Carga insumos
 export async function loadFood(){
     //FASE 1: Borra
     hideComponent(".card-insumos");
@@ -129,6 +130,7 @@ export async function loadFood(){
     }
 }
 
+//Elimina usuarios - Funcion inestable - Cuidado con clickear
 async function deleteUser(button) {
     const info = findInfoinRow(button, "ID del sistema");
     const format = {id: info};
@@ -137,6 +139,7 @@ async function deleteUser(button) {
     loadEmployees();
 }
 
+//Añadir botones
 async function addActions(button){
     try{
         const actions = document.createElement("div");
@@ -151,6 +154,7 @@ async function addActions(button){
     }
 }
 
+//FUNCIONES DE EVENTOS ADICIONALES
 function addEventsEmployees(){
     const btn1 = document.querySelectorAll("#empDelete");
     const btn2 = document.querySelectorAll("#empQR");
@@ -165,6 +169,7 @@ function addEventsEmployees(){
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     })
 }
+
 //Muestra mensajes
 function showMSG(button, handler){
     const tooltip = document.getElementById(handler);
@@ -173,12 +178,14 @@ function showMSG(button, handler){
     tooltip.style.opacity=1;
     tooltip.style.display="flex";
 }
+
 //Esconde mensajes
 function hideMSG(handler){
     const tooltip = document.getElementById(handler);
     tooltip.style.opacity=0;
     tooltip.style.display="none";
 }
+
 //FUNCIONES TABLAS
 //Limpiar tabla
 function clearTable(){
@@ -197,6 +204,7 @@ function hideComponent(componentname){
     const component = document.querySelector(componentname);
     component.style.display = "none";
 }
+
 //Generar tabla
 function generateTable(title, header, data){
     //Buscar en table.html
@@ -227,6 +235,7 @@ function generateTable(title, header, data){
     });
     destiny_load2.appendChild(tableb);
 }
+
 //Poner columna adicional y funcionalidad custom
 async function addtableFeat(actions, headtitle){
     //Buscar en table.html
@@ -248,6 +257,7 @@ async function addtableFeat(actions, headtitle){
     //Aterrizar para que la función espere
     return "Terminado";
 }
+
 //Encuentra un data según el boton, encabezado/columna
 function findInfoinRow(button, headerName=null, colIndex=null){
     const locrow=button.closest("tr");
@@ -271,6 +281,7 @@ function findInfoinRow(button, headerName=null, colIndex=null){
     }
     return null;
 }
+
 //OTRAS COSAS
 //Cargar botones para el footer de la tabla
 async function generateActionsFooter(actions){
@@ -279,6 +290,7 @@ async function generateActionsFooter(actions){
     destiny_load.appendChild(feat);
     return "Terminado";
 }
+
 //Función general para sacar la información de un método
 async function connect(jmethod){
     //Cancelo la solicitud anterior
@@ -297,6 +309,7 @@ async function connect(jmethod){
         if (error=='AbortError'){console.log("Solicitud cancelada")}
     }
 }
+
 //Función para entregar datos y ejecutar un método
 async function connectnSubmit(jmethod, info){
     //Cancelo la solicitud anterior
