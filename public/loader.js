@@ -15,7 +15,7 @@ export async function backtoHome(){
     showComponent(".card-empleados");
     showComponent(".card-pedidos");
     showComponent(".card-punto-venta");
-    
+    showMainScroll();
 }
 
 //Carga pedidos
@@ -48,6 +48,7 @@ export async function loadEmployees(){
     hideComponent(".card-empleados");
     hideComponent(".card-pedidos");
     hideComponent(".card-punto-venta");
+    hideMainScroll();
     //FASE 2: CARGA
     try{
         const destiny_load = document.querySelector('.table-gen');
@@ -61,7 +62,7 @@ export async function loadEmployees(){
         //Genera la tabla con el contenido
         generateTable(info.title, info.header, info.dbresults);
         //Espero la carga de botones
-        await generateActionsFooter('.test');
+        await generateActionsFooter('.std-button-emps');
         await addtableFeat('.button-mesh-emp-control',"Acciones");
         //Añado eventos
         addEventsEmployees();
@@ -79,6 +80,7 @@ export async function loadSales(){
     hideComponent(".card-empleados");
     hideComponent(".card-pedidos");
     hideComponent(".card-punto-venta");
+    hideMainScroll();
     //FASE 2: Carga
     const destiny_load = document.querySelector('.table-gen');
     fetch("table.html")
@@ -110,6 +112,7 @@ export async function loadFood(){
     hideComponent(".card-empleados");
     hideComponent(".card-pedidos");
     hideComponent(".card-punto-venta");
+    hideMainScroll();
     //FASE 2: CARGA
     try{
         const destiny_load = document.querySelector('.table-gen');
@@ -202,7 +205,15 @@ function showComponent(componentname){
 //AKA Component Terminator - Nerfed
 function hideComponent(componentname){
     const component = document.querySelector(componentname);
-    component.style.display = "none";
+    component.style.display="none";
+}
+
+//Cosos de scroll
+function showMainScroll(){
+    document.body.style.overflow="auto";
+}
+function hideMainScroll(){
+    document.body.style.overflow="hidden";
 }
 
 //Generar tabla

@@ -1,3 +1,4 @@
+/*Todo lo relacionado a table-button*/
 .table-button {
     /*Estructura*/
     position: relative;
@@ -32,6 +33,46 @@
     filter: brightness(1.1);
 }
 .table-button:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+
+/*Todo lo relacionado a std-buttons*/
+.std-button-emps {
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+}
+.footer-button {
+    display: flex;
+    justify-content: center;
+    border-style: none;
+    border-radius: 5px;
+    padding: 15px;
+    width: 250px;
+    transform: translateY(-100px);
+    color: white;
+    font-size: 16pt;
+    font-style: italic;
+    font-family: Georgia, sans-serif;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+.footer-button.accept {
+    background-color: #4CAF50;
+}
+.footer-button.function {
+    background-color: black;
+}
+/*Animaciones del footer-button*/
+.footer-button:hover {
+    scale: 105%;
+    filter: brightness(1.1);
+}
+.footer-button:active {
     scale: 95%;
     filter: brightness(1.3);
 }
