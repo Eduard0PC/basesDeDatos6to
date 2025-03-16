@@ -4,9 +4,8 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #000000;
-    color: #fff;
+    color: #ffffff;
     display: flex;
-    overflow: auto;
 }
 
 body::after {
@@ -25,20 +24,22 @@ body::after {
 }
 
 .header {
+    display: flex;
     position: fixed;
-    top: 0;  
-    left: 250px;
-    width: calc(100% - 250px);  /* Hace que no se cuatrapee el tamaño*/
+    margin-left: 270px;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: calc(100% - 270px);
     height: 50px;
     background-color: #afafaf;
     color: black;
     font-family: 'Georgia', serif;
-    display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    transition: 0.2s ease-in-out;
+    /*padding: 0 20px;*/
     z-index: 1; 
+    transition: 0.3s ease;
 }
 
 .header h1 {
@@ -52,7 +53,6 @@ body::after {
 }
 
 #welcome {
-    display: inline-block;
     white-space: nowrap;
     text-overflow: clip; 
     min-width: fit-content; 
@@ -133,30 +133,35 @@ body::after {
 }
 
 .content {
-    margin-left: 250px;
+    position: relative;
+    margin-top: 50px;
+    margin-left: 270px;
+    width: calc(100% - 270px);
+    height: 100%;
     flex-grow: 1;
-    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: auto;
     transition: margin-left 0.3s ease;
-    width: calc(100% - 250px);
 }
 
-.sidebar.collapsed + .content {
-    margin-left: 60px;
-    width: calc(100% - 60px);
+.sidebar.collapsed + .header {
+    margin-left: 80px;
+    width: calc(100% - 80px);
 }
 
-.sidebar.collapsed + .content .header {
-    left: 60px;
-    width: calc(100% - 60px);
+.sidebar.collapsed + .header + .content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
 }
 
 .allcards {
-    margin-top: 35px;
+    position: relative;
     padding: 20px;
+    width: calc(100%-40px);
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    width: 98%;
+    grid-template-columns: repeat(3, 1fr);
     justify-items: center;
     align-items: start;
 }
@@ -199,6 +204,10 @@ body::after {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.card-table.table-gen {
+    transform: translateY(-35px);
 }
 
 .card-icon {

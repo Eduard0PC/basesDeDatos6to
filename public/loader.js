@@ -1,3 +1,7 @@
+/*GENERALIDADES PENDIENTES
+-Refactorizacion en carga de funcionalidades
+-Integrar hide/show en una sola funcion */
+
 //Utilidades
 let aborter = new AbortController(); //Para 'transacciones' en tablas
 
@@ -63,6 +67,7 @@ export async function loadEmployees(){
         generateTable(info.title, info.header, info.dbresults);
         //Espero la carga de botones
         await generateActionsFooter('.std-button-emps');
+        await generateForm('.add-emp-form');
         await addtableFeat('.button-mesh-emp-control',"Acciones");
         //Añado eventos
         addEventsEmployees();
@@ -142,6 +147,29 @@ async function deleteUser(button) {
     loadEmployees();
 }
 
+//Muestra el formulario en cuestion
+function showForm(form) {
+    const ly = document.querySelector('.obscure-background-layout');
+    const destiny_load = document.querySelector('.'+form);
+    ly.style.display="flex";
+    destiny_load.style.display="flex";
+}
+
+//Añadir formulario
+async function addForm(form){
+    try{
+        const actions = document.createElement("div");
+        const response = await fetch("forms.html");
+        if(response.ok){
+            actions.innerHTML = await response.text();
+        }
+        const target = actions.querySelector(form);
+        return target.cloneNode(true);
+    }catch(error){
+        console.error("Error al cargar contenido: ", error);
+    }  
+}
+
 //Añadir botones
 async function addActions(button){
     try{
@@ -161,6 +189,8 @@ async function addActions(button){
 function addEventsEmployees(){
     const btn1 = document.querySelectorAll("#empDelete");
     const btn2 = document.querySelectorAll("#empQR");
+    const btn3 = document.getElementById("empAdd");
+    const btn4 = document.getElementById("empTime");
     btn1.forEach(btn=>{
         btn.addEventListener('click', ()=>(deleteUser(btn)));
         btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
@@ -171,6 +201,7 @@ function addEventsEmployees(){
         btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     })
+    btn3.addEventListener('click', ()=>(showForm('add-emp-form')));
 }
 
 //Muestra mensajes
@@ -298,6 +329,14 @@ function findInfoinRow(button, headerName=null, colIndex=null){
 async function generateActionsFooter(actions){
     const destiny_load = document.querySelector('.sys-actions-footbar');
     const feat = await addActions(actions);
+    destiny_load.appendChild(feat);
+    return "Terminado";
+}
+
+//Cargar botones para los formularios
+async function generateForm(form){
+    const destiny_load = document.querySelector('.sys-forms');
+    const feat = await addForm(form);
     destiny_load.appendChild(feat);
     return "Terminado";
 }
