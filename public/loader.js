@@ -210,14 +210,12 @@ function showMSG(button, handler){
     const coors = button.getBoundingClientRect();
     tooltip.textContent=button.dataset.msg;
     tooltip.style.opacity=1;
-    tooltip.style.display="flex";
 }
 
 //Esconde mensajes
 function hideMSG(handler){
     const tooltip = document.getElementById(handler);
     tooltip.style.opacity=0;
-    tooltip.style.display="none";
 }
 
 //FUNCIONES TABLAS
