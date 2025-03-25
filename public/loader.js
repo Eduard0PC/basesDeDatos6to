@@ -1,6 +1,7 @@
 /*GENERALIDADES PENDIENTES
 -Refactorizacion en carga de funcionalidades
--Integrar hide/show en una sola funcion */
+-Integrar hide/show en una sola funcion
+-Reestringir funciones para que nadie pueda inyectar asi de facil codigo */
 
 //Utilidades
 let aborter = new AbortController(); //Para 'transacciones' en tablas
@@ -8,6 +9,8 @@ let aborter = new AbortController(); //Para 'transacciones' en tablas
 //Funcion asegurar carga
 export function garantLoad(func){
     clearTable();
+    clearForms();
+    hideOverlay();
     func();
 }
 
@@ -20,6 +23,7 @@ export async function backtoHome(){
     showComponent(".card-pedidos");
     showComponent(".card-punto-venta");
     showMainScroll();
+    closeMiniApps();
 }
 
 //Carga pedidos
@@ -63,12 +67,15 @@ export async function loadEmployees(){
         }
         //Contacto con la base de datos
         const info = await connect('/see-empleados');
+        //CARGA DE COMPONENTES
         //Genera la tabla con el contenido
         generateTable(info.title, info.header, info.dbresults);
-        //Espero la carga de botones
-        await generateActionsFooter('.std-button-emps');
-        await generateForm('.add-emp-form');
         await addtableFeat('.button-mesh-emp-control',"Acciones");
+        //Genera acciones del pie de página
+        await generateActionsFooter('.std-button-emps');
+        //Genera los formularios y cosas relacionadas
+        await generateForm('.add-emp-form');
+        await loadMiniApp('scheduler');
         //Añado eventos
         addEventsEmployees();
         destiny_load.style.display="flex";
@@ -138,6 +145,45 @@ export async function loadFood(){
     }
 }
 
+//Carga miniapps
+async function loadMiniApp(miniapp){
+    function createNewScript() {
+        let script = document.createElement("script");
+        script.classList = "miniapp";
+        script.type = "module";
+        //Asegura que el script no se guarde el cache - me falta contexto
+        script.src = miniapp+'.js' + '?t='+new Date().getTime(); 
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+    try{
+        const container = document.querySelectorAll(miniapp);
+        const response = await fetch(miniapp+'.html');
+        if(response.ok){
+            for (const minapp of container) {
+                minapp.innerHTML = await response.text();
+            }
+        }
+        //Busca el script que se acabo de generar y lo destruyo, luego lo vuelvo a crear
+        const oldScript = document.querySelector('script[src^="'+miniapp+'.js"]'); 
+        if(oldScript){
+            oldScript.remove();
+        }
+        createNewScript();
+        
+    }catch(error){
+        console.error("Error al cargar aplicación: ", error);
+    }
+}
+
+//Cierra todas las apps
+function closeMiniApps(){
+    const minapps = document.querySelectorAll('.miniapp');
+    for(const minapp of minapps) {
+        minapp.remove();
+    }
+}
+
 //Elimina usuarios - Funcion inestable - Cuidado con clickear
 async function deleteUser(button) {
     const info = findInfoinRow(button, "ID del sistema");
@@ -149,10 +195,15 @@ async function deleteUser(button) {
 
 //Muestra el formulario en cuestion
 function showForm(form) {
-    const ly = document.querySelector('.obscure-background-layout');
     const destiny_load = document.querySelector('.'+form);
-    ly.style.display="flex";
+    showOverlay();
     destiny_load.style.display="flex";
+}
+
+//Cierra todos los formularios y se tienen que volver a cargar las apps
+function clearForms() {
+    const target = document.querySelector('.sys-forms');
+    target.innerHTML='';
 }
 
 //Añadir formulario
@@ -243,6 +294,17 @@ function showMainScroll(){
 }
 function hideMainScroll(){
     document.body.style.overflow="hidden";
+}
+
+//Cosas del overlay
+function showOverlay(){
+    const ly = document.querySelector('.obscure-background-overlay');
+    ly.style.display="flex";
+}
+
+function hideOverlay(){
+    const ly = document.querySelector('.obscure-background-overlay');
+    ly.style.display="none";
 }
 
 //Generar tabla

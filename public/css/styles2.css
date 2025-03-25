@@ -204,6 +204,7 @@ body::after {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    z-index: 0;
 }
 
 .card-table.table-gen {
@@ -324,7 +325,7 @@ body::after {
     display: block;
     border-style: none;
     max-height: 550px;
-    padding-bottom: 100px;
+    padding-bottom: 120px;
     width: 100%;
     overflow-y: auto;
 }
@@ -338,7 +339,7 @@ body::after {
     margin: auto;
     align-items: center;
     width: 100%;
-    height: 180px;
+    height: 150px;
     transform: translateY(-100%);
     background: linear-gradient(to bottom, rgba(255,255,255,0),#ebebeb);
 }
@@ -346,7 +347,7 @@ body::after {
 .sys-table thead {
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 1;
 }
 
 table {

@@ -3,9 +3,6 @@
     /*Estructura*/
     position: relative;
     cursor: pointer;
-    padding: 10px;
-    min-width: 20px;
-    min-height: 20px;
     width: 50px;
     height: 50px;
     border-width: 10px 5px;
@@ -13,6 +10,8 @@
     border-style: solid;
     border-radius: 5px;
     background-color: black;
+    align-items: center;
+    justify-content: center;
     display: inline;
     /*Cinematic*/
     transition: 0.2s;
