@@ -1,7 +1,9 @@
 scheduler {
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
+    overflow-x: auto;
 }
 
 .sch-header {
@@ -26,7 +28,7 @@ scheduler {
     --primary-color: #295bff;
 
     /*Barra*/
-    --bar-height: 100px;
+    --bar-height: 65px;
 
     /*Barra del tiempo diario */
     --fill-color: var(--primary-color);
@@ -37,7 +39,7 @@ scheduler {
 
     /*Indicadores de tiempo*/
     --timemark-width: 50px; /*X*/
-    --timemark-height: 100px; /*Y*/
+    --timemark-height: 70px; /*Y*/
     --timemark-color: var(--primary-color);
 
     --timemark-shadow: 0 0 3px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.5) inset, 0 0 0 99px var(--timemark-color) inset;
@@ -249,7 +251,7 @@ scheduler {
 .timeline>input:only-of-type ~ .progress {
     --clip-start: 0;
 }
-
+/*Para el texto flotante*/
 .timeline>input + output {
     --flip: -1;
     --x-offset: calc(var(--completed-b) * -1%);
@@ -271,7 +273,6 @@ scheduler {
     content: var(--text-value-b);
     font: var(--value-font);
 }
-
 /*Cosas del range-thumb caso por navegador*/
 .timeline>input::-webkit-slider-thumb { 
     appearance: none;
@@ -294,6 +295,7 @@ scheduler {
     pointer-events: auto;
     transition: 0.1s;
 }
+
 .timeline>input::-ms-thumb {
     appearance: none;
     height: var(--timemark-height);
@@ -304,18 +306,3 @@ scheduler {
     pointer-events: auto;
     transition: 0.1s;
 }
-
-/*
-.sch-timeline ul {
-    display: flex;
-    padding: 0;
-    width: 100%;
-    list-style: none;
-    justify-content: space-between;
-}
-*/
-/*
-.sch-timeline li {
-    font-width: 11px;
-}
-*/

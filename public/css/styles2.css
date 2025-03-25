@@ -145,6 +145,12 @@ body::after {
     transition: margin-left 0.3s ease;
 }
 
+@media (max-width: 768px) {
+    .content {
+        overflow-x: visible;
+    }
+}
+
 .sidebar.collapsed + .header {
     margin-left: 80px;
     width: calc(100% - 80px);
