@@ -49,6 +49,35 @@ router.post('/delete-user', async (req, res)=> {
     }
 });
 
+//Añadir un usuario
+router.post('/add-user', async (req, res)=> {
+    const {username, pswd, role, hinit, hfinale} = req.body;
+    const connection = getConnection();
+    const query = util.promisify(connection.query).bind(connection)
+    try{
+        const q1 = await query(
+            `INSERT INTO UsuariosNom(nombre_usuario, contrasenia, h_entrada, h_salida) 
+            VALUES (?,?,?,?)`
+            , [username, pswd, hinit, hfinale]);
+        /*
+        const q2 = await query(
+            `SELECT MAX(id_usuario) 
+            FROM UsuariosNom`);
+        */
+        const tid = q1.insertId;
+        const q2 = await query(
+            `INSERT INTO UsuariosRol 
+            VALUES (?, ?)`
+            , [tid, role]);
+        res.json({message: "Usuario añadido"});
+    } catch (error) {
+        console.error("Error al agregar usuario:", error);
+        res.status(500).json({ error: "Error al agregar usuario" });
+    } finally {
+        connection.end();
+    }
+});
+
 //-----------------------------------------CONSULTAS DE VENTAS---------------------------------------------
 //ver todas las ventas
 router.post('/see-ventas', (req, res) => {

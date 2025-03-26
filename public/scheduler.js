@@ -16,14 +16,14 @@ function getdragValues() {
 //Checa si A>B o B>A
 function changeTimelineDirection(parent, A, B, ecol, fcol) {
     if(!isWithinTimeline(A,B) && notWithinCurrently){ //Cuando A rebase a B cambian colores
-        console.log("va adentro");
+        //console.log("va adentro");
         parent.style.setProperty('--fill-color', ecol);
         parent.style.setProperty('--timeprogress-background', fcol);
         notWithinCurrently = false;
         notOuterCurrently = true;
     }
     if (isWithinTimeline(A,B) && notOuterCurrently){ //Cuando A no le alcanza a B y no esta del otro lado cambian colores
-        console.log("va afuera");
+        //console.log("va afuera");
         parent.style.setProperty('--fill-color', ecol);
         parent.style.setProperty('--timeprogress-background', fcol);
         notOuterCurrently = false;
@@ -36,11 +36,11 @@ function isWithinTimeline(A, B){
 //Modifica el valor al arrastrar cuando es A y B
 function setValueA(parent, value){
     parent.style.setProperty('--value-a', value);
-    parent.style.setProperty('--text-value-a', JSON.stringify(parsetoTime(value)));
+    parent.style.setProperty('--text-value-a', parsetoTime(value));
 }
 function setValueB(parent, value){
     parent.style.setProperty('--value-b', value);
-    parent.style.setProperty('--text-value-b', JSON.stringify(parsetoTime(value)));
+    parent.style.setProperty('--text-value-b', parsetoTime(value));
 }
 //Formatea un valor a hora
 function parsetoTime(value){
@@ -54,7 +54,7 @@ function parsetoTime(value){
     hour = parts[0];
     hour = hour.padStart(2, "0");
     minutes = minutes.padStart(2, "0");
-    const time = ''+hour+':'+minutes+':'+'00';
+    const time = '\''+hour+':'+minutes+':'+'00\'';
     return time;
 }
 //Evento de arrastrar

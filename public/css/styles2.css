@@ -139,16 +139,10 @@ body::after {
     width: calc(100% - 270px);
     height: 100%;
     flex-grow: 1;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
     scrollbar-gutter: auto;
     transition: margin-left 0.3s ease;
-}
-
-@media (max-width: 768px) {
-    .content {
-        overflow-x: visible;
-    }
 }
 
 .sidebar.collapsed + .header {

@@ -1,7 +1,8 @@
 /*GENERALIDADES PENDIENTES
 -Refactorizacion en carga de funcionalidades
--Integrar hide/show en una sola funcion
--Reestringir funciones para que nadie pueda inyectar asi de facil codigo */
+-Integrar hide/show en una sola funcion (generalizar para cualquier elemento)
+-Reestringir funciones para que nadie pueda inyectar asi de facil codigo
+-Evitar que el codigo se repita en Sources aunque no es necesario*/
 
 //Utilidades
 let aborter = new AbortController(); //Para 'transacciones' en tablas
@@ -148,11 +149,12 @@ export async function loadFood(){
 //Carga miniapps
 async function loadMiniApp(miniapp){
     function createNewScript() {
+        //setup del script
         let script = document.createElement("script");
         script.classList = "miniapp";
         script.type = "module";
         //Asegura que el script no se guarde el cache - me falta contexto
-        script.src = miniapp+'.js' + '?t='+new Date().getTime(); 
+        script.src = miniapp+'.js' + '?t='+new Date().getTime();
         script.defer = true;
         document.head.appendChild(script);
     }
@@ -165,12 +167,11 @@ async function loadMiniApp(miniapp){
             }
         }
         //Busca el script que se acabo de generar y lo destruyo, luego lo vuelvo a crear
-        const oldScript = document.querySelector('script[src^="'+miniapp+'.js"]'); 
+        const oldScript = document.querySelector('script[src^="'+miniapp+'.js"]');
         if(oldScript){
             oldScript.remove();
         }
-        createNewScript();
-        
+        createNewScript();  
     }catch(error){
         console.error("Error al cargar aplicación: ", error);
     }
@@ -190,7 +191,23 @@ async function deleteUser(button) {
     const format = {id: info};
     await connectnSubmit('/delete-user', format);
     //Recarga
-    loadEmployees();
+    garantLoad(()=>(loadEmployees()));
+}
+
+//Añade usuarios - Pendiente - falta validacion
+async function addUser(event) {
+    event.preventDefault();
+    const filter = /^['"]|['"]$/g;
+    const style = getComputedStyle(document.querySelector('.sch-timeline'));
+    const username = document.getElementById('nwuser').value;
+    const password = document.getElementById('nwpswd').value;
+    const role = document.getElementById('nwrole').value;
+    const schstart = style.getPropertyValue('--text-value-a').replaceAll(filter, '');
+    const schend = style.getPropertyValue('--text-value-b').replaceAll(filter, '');
+    const format= {username: username, pswd: password, role: role, hinit: schstart, hfinale: schend};
+    await connectnSubmit('/add-user', format);
+    //Recarga
+    garantLoad(()=>(loadEmployees()));
 }
 
 //Muestra el formulario en cuestion
@@ -198,6 +215,13 @@ function showForm(form) {
     const destiny_load = document.querySelector('.'+form);
     showOverlay();
     destiny_load.style.display="flex";
+}
+
+//Oculta el formulario en cuestión
+function closeForm(form) {
+    const destiny_load = document.querySelector('.'+form)
+    hideOverlay();
+    destiny_load.style.display="none";
 }
 
 //Cierra todos los formularios y se tienen que volver a cargar las apps
@@ -241,7 +265,8 @@ function addEventsEmployees(){
     const btn1 = document.querySelectorAll("#empDelete");
     const btn2 = document.querySelectorAll("#empQR");
     const btn3 = document.getElementById("empAdd");
-    const btn4 = document.getElementById("empTime");
+    const btn4 = document.getElementById("empAddClose");
+    const form = document.querySelector('.add-emp-form');
     btn1.forEach(btn=>{
         btn.addEventListener('click', ()=>(deleteUser(btn)));
         btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
@@ -253,6 +278,8 @@ function addEventsEmployees(){
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     })
     btn3.addEventListener('click', ()=>(showForm('add-emp-form')));
+    btn4.addEventListener('click', ()=>(closeForm('add-emp-form')));
+    form.addEventListener('submit', (event)=>(addUser(event)));
 }
 
 //Muestra mensajes
