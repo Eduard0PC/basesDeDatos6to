@@ -324,11 +324,11 @@ function hideMSG(handler){
 //Muestra ventanas flotantes
 function showPopUp(componentname){
     const component = document.querySelector(componentname);
-    component.style.scale=1;
+    component.style.transform='scale(1)';
 }
 function hidePopUp(componentname){
     const component = document.querySelector(componentname);
-    component.style.scale=0;
+    component.style.transform='scale(0)';
 }
 
 //AKA Component birthmaker - Buffed

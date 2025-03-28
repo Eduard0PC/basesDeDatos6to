@@ -59,11 +59,6 @@ router.post('/add-user', async (req, res)=> {
             `INSERT INTO UsuariosNom(nombre_usuario, contrasenia, h_entrada, h_salida) 
             VALUES (?,?,?,?)`
             , [username, pswd, hinit, hfinale]);
-        /*
-        const q2 = await query(
-            `SELECT MAX(id_usuario) 
-            FROM UsuariosNom`);
-        */
         const tid = q1.insertId;
         const q2 = await query(
             `INSERT INTO UsuariosRol 
