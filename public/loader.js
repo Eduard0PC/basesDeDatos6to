@@ -194,6 +194,26 @@ async function deleteUser(button) {
     garantLoad(()=>(loadEmployees()));
 }
 
+//Genera QR
+async function generateQR(button) {
+    const idEmpleado = findInfoinRow(button, "ID del sistema"); // Obtiene el ID de la fila
+    if (!idEmpleado) return alert("No se pudo obtener el ID del empleado");
+    try {
+        const data = await connectnSubmit('/generate-qr', {id: idEmpleado});
+        if (data.qrCode) {
+            // Crear y mostrar la imagen del QR en un contenedor
+            const qrImage = document.getElementById("qr-image");
+            qrImage.src = data.qrCode;  // Asigna la URL del QR a una imagen
+            showPopUp('#qr-container');
+            addEventsQR();
+        } else {
+            alert("Error al generar el QR");
+        }
+    } catch (error) {
+        console.error("Error al obtener el QR:", error);
+    }
+}
+
 //Añade usuarios - Pendiente - falta validacion
 async function addUser(event) {
     event.preventDefault();
@@ -245,32 +265,6 @@ async function addForm(form){
     }  
 }
 
-//Genera QR
-async function generateQR(button) {
-    const idEmpleado = findInfoinRow(button, "ID del sistema"); // Obtiene el ID de la fila
-    if (!idEmpleado) return alert("No se pudo obtener el ID del empleado");
-
-    try {
-        const response = await fetch('/generate-qr', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: idEmpleado })
-        });
-
-        const data = await response.json();
-        if (data.qrCode) {
-            // Crear y mostrar la imagen del QR en un contenedor
-            const qrContainer = document.getElementById("qr-container"); 
-            const qrImage = document.getElementById("qr-image");
-            qrImage.src = data.qrCode;  // Asigna la URL del QR a una imagen
-            qrContainer.style.display = "flex"; //cosillas de CSS (aaaaaaaaaaaaaaaaaah)
-        } else {
-            alert("Error al generar el QR");
-        }
-    } catch (error) {
-        console.error("Error al obtener el QR:", error);
-    }
-}
 //Añadir botones
 async function addActions(button){
     try{
@@ -308,6 +302,11 @@ function addEventsEmployees(){
     form.addEventListener('submit', (event)=>(addUser(event)));
 }
 
+function addEventsQR(){
+    const qrbtn1 = document.getElementById("button-close-qr");
+    qrbtn1.addEventListener('click', ()=>(hidePopUp('#qr-container')));
+}
+
 //Muestra mensajes
 function showMSG(button, handler){
     const tooltip = document.getElementById(handler);
@@ -322,12 +321,15 @@ function hideMSG(handler){
     tooltip.style.opacity=0;
 }
 
-//FUNCIONES TABLAS
-//Limpiar tabla
-function clearTable(){
-    const destiny_load = document.querySelector('.table-gen');
-    destiny_load.innerHTML='';
-} 
+//Muestra ventanas flotantes
+function showPopUp(componentname){
+    const component = document.querySelector(componentname);
+    component.style.scale=1;
+}
+function hidePopUp(componentname){
+    const component = document.querySelector(componentname);
+    component.style.scale=0;
+}
 
 //AKA Component birthmaker - Buffed
 function showComponent(componentname){
@@ -358,6 +360,13 @@ function showOverlay(){
 function hideOverlay(){
     const ly = document.querySelector('.obscure-background-overlay');
     ly.style.display="none";
+}
+
+//FUNCIONES TABLAS
+//Limpiar tabla
+function clearTable(){
+    const destiny_load = document.querySelector('.table-gen');
+    destiny_load.innerHTML='';
 }
 
 //Generar tabla

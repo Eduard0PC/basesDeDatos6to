@@ -4,27 +4,9 @@
     <table class="sys-table"></table>
 </div>
 <div class="sys-actions-footbar"></div>
-<div id="qr-container" 
-    style="display: none; 
-    position: fixed; 
-    top: 50%; left: 50%; 
-    transform: translate(-50%, -50%); 
-    background: white; 
-    padding: 20px; 
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.5); 
-    z-index: 1000; 
-    width: 300px;">
+<div id="qr-container">
     <img src="" alt="QR Code" id="qr-image" style="width: 100%; height: 100%;">
-
-    <button onclick="document.getElementById('qr-container').style.display='none'" 
-    style="margin-top: 10px; 
-    padding: 10px 20px; 
-    font-size: 16px; 
-    cursor: pointer; 
-    display: block; 
-    margin-left: auto; 
-    margin-right: auto;">
-    Cerrar</button>
+    <button id="button-close-qr">Cerrar</button>
 </div>
 
 <script src="loader.js" defer></script>
