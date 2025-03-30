@@ -18,11 +18,7 @@ export function garantLoad(func){
 //Regresar a Home
 export async function backtoHome(){
     hideComponent(".table-gen");
-    showComponent(".card-insumos");
-    showComponent(".card-ventas");
-    showComponent(".card-empleados");
-    showComponent(".card-pedidos");
-    showComponent(".card-punto-venta");
+    showGrid(".allcards");
     showMainScroll();
     closeMiniApps();
 }
@@ -52,11 +48,7 @@ export async function loadOrders(){
 //Elimina todas las cartas y carga la tabla
 export async function loadEmployees(){
     //FASE 1: BORRA
-    hideComponent(".card-insumos");
-    hideComponent(".card-ventas");
-    hideComponent(".card-empleados");
-    hideComponent(".card-pedidos");
-    hideComponent(".card-punto-venta");
+    hideComponent(".allcards");
     hideMainScroll();
     //FASE 2: CARGA
     try{
@@ -88,11 +80,7 @@ export async function loadEmployees(){
 //Carga ventas
 export async function loadSales(){
     //FASE 1: Borra
-    hideComponent(".card-insumos");
-    hideComponent(".card-ventas");
-    hideComponent(".card-empleados");
-    hideComponent(".card-pedidos");
-    hideComponent(".card-punto-venta");
+    hideComponent(".allcards");
     hideMainScroll();
     //FASE 2: Carga
     const destiny_load = document.querySelector('.table-gen');
@@ -120,11 +108,7 @@ export async function loadSales(){
 //Carga insumos
 export async function loadFood(){
     //FASE 1: Borra
-    hideComponent(".card-insumos");
-    hideComponent(".card-ventas");
-    hideComponent(".card-empleados");
-    hideComponent(".card-pedidos");
-    hideComponent(".card-punto-venta");
+    hideComponent(".allcards");
     hideMainScroll();
     //FASE 2: CARGA
     try{
@@ -331,6 +315,12 @@ function hidePopUp(componentname){
     component.style.transform='scale(0)';
 }
 
+//Muestra el tablero correctamente
+function showGrid(grid) {
+    const sgrid = document.querySelector(grid);
+    sgrid.style.display="grid";
+}
+
 //AKA Component birthmaker - Buffed
 function showComponent(componentname){
     const component = document.querySelector(componentname);
@@ -356,7 +346,6 @@ function showOverlay(){
     const ly = document.querySelector('.obscure-background-overlay');
     ly.style.display="flex";
 }
-
 function hideOverlay(){
     const ly = document.querySelector('.obscure-background-overlay');
     ly.style.display="none";
