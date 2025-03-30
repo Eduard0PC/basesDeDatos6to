@@ -37,7 +37,7 @@
 }
 
 /*Todo lo relacionado a std-buttons*/
-.std-button-emps {
+.std-buttons {
     display: flex;
     flex-direction: column;
     height: 50px;

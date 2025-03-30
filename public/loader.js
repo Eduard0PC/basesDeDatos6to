@@ -23,7 +23,7 @@ export async function backtoHome(){
     closeMiniApps();
 }
 
-//Carga pedidos
+//Carga pedidos - Para estas funciones elimina el menu y carga la tabla
 export async function loadOrders(){
     const destiny_load = document.querySelector('.card-pedidos');
     fetch("table.html")
@@ -40,12 +40,12 @@ export async function loadOrders(){
     })
     .then(info=>{
         //Carga la información de la tabla
-        generateTable(info.title, info.header, info.dbresults);
+        generateTable('card-pedidos', info.title, info.header, info.dbresults);
     })
     .catch(error=>console.error("Error al cargar el contenido: ", error));
 }
 
-//Elimina todas las cartas y carga la tabla
+//Carga empleados
 export async function loadEmployees(){
     //FASE 1: BORRA
     hideComponent(".allcards");
@@ -62,10 +62,10 @@ export async function loadEmployees(){
         const info = await connect('/see-empleados');
         //CARGA DE COMPONENTES
         //Genera la tabla con el contenido
-        generateTable(info.title, info.header, info.dbresults);
+        generateTable('table-gen', info.title, info.header, info.dbresults);
         await addtableFeat('.button-mesh-emp-control',"Acciones");
         //Genera acciones del pie de página
-        await generateActionsFooter('.std-button-emps');
+        await generateActionsFooter('table-gen','.std-buttons.emps');
         //Genera los formularios y cosas relacionadas
         await generateForm('.add-emp-form');
         await loadMiniApp('scheduler');
@@ -98,7 +98,7 @@ export async function loadSales(){
         })
         .then(info=>{
             //Carga la información de la tabla
-            generateTable(info.title, info.header, info.dbresults);
+            generateTable('table-gen', info.title, info.header, info.dbresults);
             //Mostrar
             destiny_load.style.display="flex";
         })
@@ -121,9 +121,33 @@ export async function loadFood(){
         //Contacto con la base de datos
         const info = await connect('/see-insumos');
         //Genera la tabla con el contenido
-        generateTable(info.title, info.header, info.dbresults);
+        generateTable('table-gen', info.title, info.header, info.dbresults);
         //Espero la carga de botones
-        await generateActionsFooter('.standard-buttons');
+        await generateActionsFooter('table-gen','.standard-buttons');
+        destiny_load.style.display="flex";
+    }catch (error){
+        console.error("Error al cargar contenido: ", error);
+    }
+}
+
+//Carga las entradas y salidas de empleados
+async function loadTimeEmployees(){
+    try{
+        const destiny_load = document.querySelector('.table-gen');
+        //Carga la plantilla
+        const response = await fetch("table.html");
+        if(response.ok){
+            destiny_load.innerHTML= await response.text();
+        }
+        //Contacto con la base de datos
+        const info = await connect('/see-time-empleados');
+        //CARGA DE COMPONENTES
+        //Genera la tabla con el contenido
+        generateTable('table-gen', info.title, info.header, info.dbresults);
+        //Genera acciones del pie de página
+        await generateActionsFooter('table-gen', '.std-buttons.timeemps');
+        //Añado eventos
+        addEventsTimeEmployees();
         destiny_load.style.display="flex";
     }catch (error){
         console.error("Error al cargar contenido: ", error);
@@ -198,7 +222,7 @@ async function generateQR(button) {
     }
 }
 
-//Añade usuarios - Pendiente - falta validacion
+//Añade usuarios - Falta validacion robusta
 async function addUser(event) {
     event.preventDefault();
     const filter = /^['"]|['"]$/g;
@@ -270,6 +294,7 @@ function addEventsEmployees(){
     const btn2 = document.querySelectorAll("#empQR");
     const btn3 = document.getElementById("empAdd");
     const btn4 = document.getElementById("empAddClose");
+    const btn5 = document.getElementById("empTime");
     const form = document.querySelector('.add-emp-form');
     btn1.forEach(btn=>{
         btn.addEventListener('click', ()=>(deleteUser(btn)));
@@ -283,7 +308,13 @@ function addEventsEmployees(){
     })
     btn3.addEventListener('click', ()=>(showForm('add-emp-form')));
     btn4.addEventListener('click', ()=>(closeForm('add-emp-form')));
+    btn5.addEventListener('click', ()=>(loadTimeEmployees()));
     form.addEventListener('submit', (event)=>(addUser(event)));
+}
+
+function addEventsTimeEmployees(){
+    const btn1 = document.getElementById("empBack");
+    btn1.addEventListener('click', ()=>(loadEmployees()));
 }
 
 function addEventsQR(){
@@ -358,11 +389,17 @@ function clearTable(){
     destiny_load.innerHTML='';
 }
 
-//Generar tabla
-function generateTable(title, header, data){
+//Nose si vaya a necesitar estas funciones después
+function clearInnerTable(section, table){
+    const destiny_load = document.querySelector('.'+section+' .'+table);
+    destiny_load.innerHTML='';
+}
+
+//Generar tabla - Quizas necesite una modificacion
+function generateTable(section, title, header, data){
     //Buscar en table.html
-    const destiny_load1 = document.querySelector('.table-title');
-    const destiny_load2 = document.querySelector('.sys-table');
+    const destiny_load1 = document.querySelector('.'+section+' .table-title');
+    const destiny_load2 = document.querySelector('.'+section+' .sys-table');
     //Añadir título en table.html
     destiny_load1.innerHTML = title;
     const tableh = document.createElement("thead");
@@ -437,8 +474,8 @@ function findInfoinRow(button, headerName=null, colIndex=null){
 
 //OTRAS COSAS
 //Cargar botones para el footer de la tabla
-async function generateActionsFooter(actions){
-    const destiny_load = document.querySelector('.sys-actions-footbar');
+async function generateActionsFooter(section, actions){
+    const destiny_load = document.querySelector('.'+section+' .sys-actions-footbar');
     const feat = await addActions(actions);
     destiny_load.appendChild(feat);
     return "Terminado";

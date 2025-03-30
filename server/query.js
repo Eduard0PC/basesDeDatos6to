@@ -25,6 +25,18 @@ router.post('/see-empleados', (req, res) => {
     });
 });
 
+//ver el registro de empleados al trabajo
+router.post('/see-time-empleados', (req, res) => {
+    const connection = getConnection();
+    connection.query(`
+        SELECT *
+        FROM RegistroHorario`,
+        (error, results)=>{
+        res.json({title: "Registro de entradas y salidas de empleados", header:["ID del sistema" ,"Nombre", "Entrada", "Salida"], dbresults: results});
+        connection.end();
+    });
+});
+
 //Eliminar un usuario
 router.post('/delete-user', async (req, res)=> {
     const { id } = req.body;
