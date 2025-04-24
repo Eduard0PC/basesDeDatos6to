@@ -92,10 +92,11 @@ async function generateQR(button) {
             const qrContainer = document.getElementById("qr-container"); 
             const qrImage = document.getElementById("qr-image");
             qrImage.src = data.qrCode;  // Asigna la URL del QR a una imagen
-            qrContainer.style.display = "flex"; //cosillas de CSS (aaaaaaaaaaaaaaaaaah)
+            qrContainer.style.display = "flex"; //cosillas de CSS ()
         } else {
             alert("Error al generar el QR");
         }
+        await connectnSubmit('/insert-horario', { id: idEmpleado });
     } catch (error) {
         console.error("Error al obtener el QR:", error);
     }
