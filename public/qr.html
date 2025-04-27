@@ -57,32 +57,50 @@
     <div id="qr-reader"></div>
 
     <script>
+        let scanning = true; 
+    
         function onScanSuccess(qrMessage) {
+            if (!scanning) return;
+    
+            scanning = false;
             console.log("QR Detectado: ", qrMessage);
-            
-            // Enviar el ID al servidor para registrarlo en la base de datos
-            fetch('/insert-horario', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: qrMessage })
-            })
-            .then(response => response.json())
-            .then(data => alert(data.message))
-            .catch(error => console.error("Error en el registro:", error));
+    
+            html5QrCode.stop()
+                .then(() => {
+                    console.log("Escaneo detenido exitosamente.");
+    
+                    // Enviar el ID
+                    fetch('/insert-horario', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: qrMessage })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                        // Redirigir a la página 
+                        window.location.href = "/checkqr.html"; //
+                    })
+                    .catch(error => console.error("Error en el registro:", error));
+                })
+                .catch(err => {
+                    console.error("Error al detener el escaneo:", err);
+                });
         }
-
+    
         function onScanError(error) {
             console.warn("Error en el escaneo:", error);
         }
-
-        //Iniciar el escáner de QR
-        let html5QrCode = new Html5Qrcode("qr-reader");
+    
+        const html5QrCode = new Html5Qrcode("qr-reader");
         html5QrCode.start(
-            { facingMode: "environment" }, 
+            { facingMode: "environment" },
             { fps: 10, qrbox: 250 },
             onScanSuccess,
             onScanError
         );
     </script>
+    
+    
 </body>
 </html>
