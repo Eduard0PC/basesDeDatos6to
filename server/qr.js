@@ -31,25 +31,56 @@ router.post('/insert-horario', (req, res) => {
     }
 
     const connection = getConnection();
-    //Chequeo si hay una entrada 
-    const checkQuery = `
-        SELECT id, hora_entrada, hora_salida 
-        FROM RegistroHorario 
-        WHERE id_usuario = ? 
-        ORDER BY hora_entrada DESC 
-        LIMIT 1`;
-    const query = `
-        INSERT INTO RegistroHorario (id_usuario, entrada)
-        VALUES (?, NOW())`; // 'NOW()' captura la hora actual
 
-    connection.query(query, [id], (error, results) => {
+    // Verificar si hay entradas sin salidas
+    const checkQuery = `
+        SELECT id_registro 
+        FROM RegistroHorario 
+        WHERE id_usuario = ? AND salida IS NULL 
+        ORDER BY entrada DESC 
+        LIMIT 1`;
+
+    connection.query(checkQuery, [id], (error, results) => {
         if (error) {
-            console.error("Error al insertar en RegistroHorario:", error);
-            res.status(500).json({ error: "Error al registrar la entrada" });
-        } else {
-            res.json({ message: "Entrada registrada correctamente" });
+            console.error("Error al verificar registro:", error);
+            res.status(500).json({ error: "Error al verificar registro" });
+            connection.end();
+            return;
         }
-        connection.end();
+
+        if (results.length > 0) {
+            // insertar salida
+            const registroId = results[0].id_registro;
+            const updateQuery = `
+                UPDATE RegistroHorario 
+                SET salida = NOW() 
+                WHERE id_registro = ?`;
+
+            connection.query(updateQuery, [registroId], (error, updateResults) => {
+                if (error) {
+                    console.error("Error al actualizar salida:", error);
+                    res.status(500).json({ error: "Error al registrar salida" });
+                } else {
+                    res.json({ message: "Salida registrada correctamente" });
+                }
+                connection.end();
+            });
+        } else {
+            // Si no hay entrada se registra
+            const insertQuery = `
+                INSERT INTO RegistroHorario (id_usuario, entrada)
+                VALUES (?, NOW())`;
+
+            connection.query(insertQuery, [id], (error, insertResults) => {
+                if (error) {
+                    console.error("Error al insertar entrada:", error);
+                    res.status(500).json({ error: "Error al registrar entrada" });
+                } else {
+                    res.json({ message: "Entrada registrada correctamente" });
+                }
+                connection.end();
+            });
+        }
     });
 });
 

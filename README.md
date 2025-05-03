@@ -1,9 +1,4 @@
 # Proyecto Base de datos. Restaurante Han-Burguesa
-***
-**FUNCIONALIDADES FALTANTES**
-- Chequeo de QR
-- Funcionalidades de todos los botones
-***
 ## **NOTAS**
 - *FAVOR DE NO ELIMINAR O CAMBIAR EL ARCHIVO DB.JS*
 ***
@@ -31,7 +26,7 @@ CREATE TABLE UsuariosRol (
 ````
 CREATE TABLE Insumos (
   id_insumo INT AUTO_INCREMENT PRIMARY KEY,
-  nombre_insumo VARCHAR(10) UNIQUE,
+  nombre_insumo VARCHAR(30) UNIQUE,
   unidad_medida CHAR(2) NOT NULL
 );
 ````
@@ -40,7 +35,7 @@ CREATE TABLE Insumos (
 CREATE TABLE VencInsumos (
   id_insumo INT NOT NULL,
   caducidad DATE NOT NULL,
-  cantidad INT NOT NULL,
+  cantidad NUMERIC(8,2) NOT NULL,
   PRIMARY KEY (id_insumo, caducidad), 
   CONSTRAINT fk_idinsumo FOREIGN KEY (id_insumo) REFERENCES Insumos(id_insumo)
 );
@@ -48,15 +43,15 @@ CREATE TABLE VencInsumos (
 - TABLA ALIMENTOS:
 ````
 CREATE TABLE Alimentos (
-    id_alimento VARCHAR(12) PRIMARY KEY, 
-    nombre_alimento VARCHAR(10) NOT NULL, 
+    id_alimento INT AUTO_INCREMENT PRIMARY KEY, 
+    nombre_alimento VARCHAR(50) NOT NULL, 
     precio NUMERIC(8,2) NOT NULL
 );
 ````
 - TABLA PEDIDODETALLES:
 ````
 CREATE TABLE PedidoDetalles (
-    id_pedido VARCHAR(12) PRIMARY KEY,
+    id_pedido INT AUTO_INCREMENT PRIMARY KEY, 
     fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     hora_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -64,12 +59,12 @@ CREATE TABLE PedidoDetalles (
 - TABLA PEDIDOS:
 ````
 CREATE TABLE Pedidos (
-    id_pedido VARCHAR(12),
-    id_alimento VARCHAR(12), 
+    id_pedido INT,
+    id_alimento INT, 
     cantidad_alimento NUMERIC(5) NOT NULL, 
     total_pedido NUMERIC(8,2) NOT NULL,
-    direccion VARCHAR(72) NOT NULL,
-    nombre_cliente VARCHAR(24) NOT NULL,
+    direccion VARCHAR(80) NOT NULL,
+    nombre_cliente VARCHAR(30) NOT NULL,
     CONSTRAINT fk_idpedido FOREIGN KEY (id_pedido) REFERENCES PedidoDetalles(id_pedido),
     CONSTRAINT fk_idalimento FOREIGN KEY (id_alimento) REFERENCES Alimentos(id_alimento)
 );
