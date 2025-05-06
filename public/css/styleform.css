@@ -1,0 +1,227 @@
+.obscure-background-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: all;
+    z-index: 2;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+
+.sys-forms {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.sys-form {
+    display: none;
+    position: absolute;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin: auto;
+    background-color: white;
+    max-height: 80%;
+    max-width: 80%;
+    transform: translateY(-5%);
+    padding: 20px;
+    border-radius: 10px;
+    pointer-events: all;
+    z-index: 4;
+}
+
+.sys-form h2, .sys-form input, .sys-form label, .sys-form p{
+    display: block;
+    color: black;
+}
+
+.form-header {
+    width: calc(100% - 15px);
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 30px;
+}
+
+.form-header .form-close {
+    background: transparent;
+    border: none;
+    border-radius: 15px;
+    width: 30px;
+    height: 30px;
+    transition: 0.2s;
+}
+
+.form-header .form-close:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    scale: 105%;
+}
+
+.sys-form form {
+    width: 100%;
+    overflow-y: auto;
+}
+
+.sys-form form .top-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.sys-form form .top-fields input {
+    width: 80%;
+    padding: 7px;
+    font-size: 11pt;
+    border: none;
+    border-bottom: 2px outset black;
+    outline: none;
+}
+
+.sys-form form .top-fields select {
+    width: 80%;
+    padding: 10px;
+    font-size: 11pt;
+    background-color: rgb(217, 226, 233);
+    border: none;
+    outline: none;
+}
+
+.sys-form form .form-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+/*Botones*/
+.form-button {
+    display: flex;
+    justify-content: center;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 150px;
+    color: white;
+    font-size: 14pt;
+    font-style: italic;
+    font-family: Georgia, sans-serif;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+.form-button.accept {
+    background-color: #4CAF50;
+}
+.form-button.function {
+    background-color: black;
+}
+/*Animaciones del form-button*/
+.form-button:hover {
+    scale: 105%;
+    filter: brightness(1.1);
+}
+.form-button:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+
+.no-stock::after {
+    animation: blink 3s infinite;
+    content: "❌ ";
+  }  
+
+.low-stock::after {
+    animation: blink 3s infinite;
+    content: "⚠️ ";
+  }  
+
+.mid-stock::after {
+    animation: blink 3s infinite;
+    content: "✅ ";
+  }  
+
+.high-stock::after {
+    animation: blink 3s infinite;
+    content: "😜 ";
+  }  
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+.no-stock{
+    color: red;
+    font-weight: bold;
+  }  
+
+.low-stock{
+    color: orange;
+    font-weight: bold;
+  }  
+
+.mid-stock{
+    color: limegreen;
+    font-weight: bold;
+  }  
+
+.high-stock{
+    color: blue;
+    font-weight: bold;
+  }  
+
+/* Style for the select dropdown, input fields, and buttons in pedidos forms */
+.add-pedido-form .alimento,
+.add-pedido-form .cantidad,
+.add-pedido-form .total {
+    width: 80%;
+    padding: 10px;
+    font-size: 12pt;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9; /* Light background */
+    border: 2px solid #161414b0; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect for the dropdown, input, and button */
+.add-pedido-form .alimento:hover,
+.add-pedido-form .cantidad:hover,
+.add-pedido-form .total:hover {
+    border-color: #4CAF50; /* Green border on hover */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Subtle green glow */
+}
+
+/* Focus effect for the dropdown and input */
+.add-pedido-form .alimento:focus,
+.add-pedido-form .cantidad:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.8); /* Stronger green glow */
+}
+
+/* Disabled state for the dropdown and input */
+.add-pedido-form .alimento:disabled,
+.add-pedido-form .cantidad:disabled {
+    background-color: #e0e0e0; /* Gray background */
+    color: #a0a0a0; /* Gray text */
+    border-color: #d0d0d0; /* Light gray border */
+    cursor: not-allowed; /* Disabled cursor */
+}
+

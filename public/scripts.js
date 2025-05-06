@@ -1,4 +1,4 @@
-import { backtoHome, loadEmployees, loadEntras, loadFood, loadOrders } from './loader.js';
+import { garantLoad, backtoHome, loadEmployees, loadSales, loadFood, loadOrders } from './loader.js';
 //Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
@@ -84,16 +84,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 //MANEJO DEL BOTON HOME
-document.getElementById('homeBtn').addEventListener('click', backtoHome);
+document.getElementById('homeBtn').addEventListener('click', ()=>(garantLoad(backtoHome)));
 
 //MANEJO DEL BOTON EMPLEADOS
-document.getElementById('empleadosBtn').addEventListener('click', loadEmployees);
+document.getElementById('empleadosBtn').addEventListener('click', ()=>(garantLoad(loadEmployees)));
 
 //MANEJO DEL BOTON VENTAS
-document.getElementById('ventasBtn').addEventListener('click', loadEntras);
+document.getElementById('ventasBtn').addEventListener('click', ()=>(garantLoad(loadSales)));
 
 //MANEJO DEL BOTON INSUMOS
-document.getElementById('insumosBtn').addEventListener('click', loadFood);
+document.getElementById('insumosBtn').addEventListener('click', ()=>(garantLoad(loadFood)));
 
 //MANEJO DEL BOTON DE CERRAR SESION
 document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -114,10 +114,10 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 loadOrders();
 
 //MANEJO DE LA CARD EMPLEADOS
-document.getElementById('empCard').addEventListener('click', loadEmployees);
+document.getElementById('empCard').addEventListener('click', ()=>(garantLoad(loadEmployees)));
 
-//MANEJO DE LA CARD EMPLEADOS
-document.getElementById('venCard').addEventListener('click', loadEntras);
+//MANEJO DE LA CARD VENTAS
+document.getElementById('venCard').addEventListener('click', ()=>(garantLoad(loadSales)));
 
-//MANEJO DE LA CARD EMPLEADOS
-document.getElementById('insCard').addEventListener('click', loadFood);
+//MANEJO DE LA CARD INSUMOS
+document.getElementById('insCard').addEventListener('click', ()=>(garantLoad(loadFood)));

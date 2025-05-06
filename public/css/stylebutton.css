@@ -1,0 +1,242 @@
+/*Todo lo relacionado a table-button*/
+.table-button {
+    /*Estructura*/
+    position: relative;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-width: 10px 5px;
+    border-top: 5px;
+    border-style: solid;
+    border-radius: 5px;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    display: inline;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+.table-button.function {
+    border-color: rgb(55, 82, 156); 
+}
+.table-button.update {
+    border-color: rgb(0, 184, 46);
+}
+.table-button.delete {
+    border-color: rgb(165, 22, 22);
+}
+/*Animaciones del table-button*/
+.table-button:hover {
+    scale: 105%;
+    background-color: rgb(40, 40, 40);
+    filter: brightness(1.1);
+}
+.table-button:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+
+/*Todo lo relacionado a std-buttons*/
+.std-buttons {
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+}
+.std-buttons-ins {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+}
+.footer-button {
+    display: flex;
+    justify-content: center;
+    border-style: none;
+    border-radius: 5px;
+    padding: 15px;
+    width: 250px;
+    transform: translateY(-100px);
+    color: white;
+    font-size: 16pt;
+    font-style: italic;
+    font-family: Georgia, sans-serif;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+.footer-button.accept {
+    background-color: #4CAF50;
+}
+.footer-button.function {
+    background-color: black;
+}
+/*Animaciones del footer-button*/
+.footer-button:hover {
+    scale: 105%;
+    filter: brightness(1.1);
+}
+.footer-button:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+#button-close-qr {
+    margin-top: 10px; 
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: black; 
+    font-size: 16px;
+    color: white;
+    cursor: pointer; 
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+#button-close-qr:hover {
+    background-color: #CC0000;
+}
+#button-close-qr:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+
+.deliver-button {
+    display: flex;
+    justify-content: center;
+    border-style: none;
+    border-radius: 5px;
+    padding: 15px;
+    width: 250px;
+    transform: translateY(10px);
+    color: white;
+    font-size: 16pt;
+    font-style: italic;
+    font-family: Georgia, sans-serif;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+
+.deliver-button.accept {
+    background-color: #4CAF50;
+}
+.deliver-button.function {
+    background-color: black;
+}
+/*Animaciones del footer-button*/
+.deliver-button:hover {
+    scale: 105%;
+    filter: brightness(1.1);
+}
+.deliver-button:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+
+/*Julianadas*/
+.footer-button-ins {
+    justify-content: center;
+    border-style: none;
+    border-radius: 5px;
+    padding: 15px;
+    width: 250px;
+    color: white;
+    font-size: 16pt;
+    font-style: italic;
+    font-family: Georgia, sans-serif;
+    /*Cinematic*/
+    transition: 0.2s;
+}
+
+.footer-button-ins.accept {
+    background-color: #4CAF50;
+}
+
+.footer-button-ins.modify {
+    font-weight: bold;
+    color: lightgreen;
+    background-color: #fefefe;
+    border: 2px solid lightgreen;
+    border-style: solid;
+    border-radius: 5px;
+    outline: 2px solid green;
+}
+
+.footer-button-ins.function {
+    background-color: black;
+}
+/*Animaciones del footer-button*/
+.footer-button-ins:hover {
+    scale: 105%;
+    filter: brightness(1.1);
+}
+.footer-button-ins:active {
+    scale: 95%;
+    filter: brightness(1.3);
+}
+
+.sys-table tr.selected-row {
+    background-color: #868686ca;
+}
+
+.alimento-entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Space between elements in a row */
+    width: 100%;
+    justify-content: space-between; /* Spread elements evenly */
+}
+
+/* Style for the "Añadir Alimento" button */
+#addAlimento {
+    display: block;
+    margin: 20px auto; /* Center the button horizontally */
+    background-color: #2196F3; /* Blue background */
+    color: white;
+    font-size: 14pt;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#addAlimento:hover {
+    background-color: #1976D2; /* Darker blue */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+#addAlimento:active {
+    background-color: #1565C0; /* Even darker blue */
+    transform: scale(0.95); /* Slightly shrink on click */
+}
+
+/* Style for the "Eliminar" button */
+.remove-alimento {
+    background-color: #f44336; /* Red background */
+    color: white;
+    font-size: 12pt;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.remove-alimento:hover {
+    background-color: #e53935; /* Darker red */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.remove-alimento:active {
+    background-color: #d32f2f; /* Even darker red */
+    transform: scale(0.95); /* Slightly shrink on click */
+}
