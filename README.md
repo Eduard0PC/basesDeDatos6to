@@ -1,23 +1,22 @@
 # Proyecto Base de datos. Restaurante Han-Burguesa
 ***
 **FUNCIONALIDADES FALTANTES**
-- BOTON EMPLEADOS
-- BOTON INSUMOS
-- BOTON VENTAS
-- FUNCIONALIDAD QR
+- Chequeo de QR
+- Funcionalidades de todos los botones
 ***
 ## **NOTAS**
 - *FAVOR DE NO ELIMINAR O CAMBIAR EL ARCHIVO DB.JS*
-- *EL ARCHIVO QR.JS NO EStA BIEN IMPLEMENTADO AUN*
 ***
 Comandos SQL ara creación de tablas:
 
 - TABLA USUARIOSNOM:
 ````    
 CREATE TABLE UsuariosNom (
-id_usuario INT AUTO_INCREMENT PRIMARY KEY, 
-nombre_usuario VARCHAR(32) NOT NULL, 
-contrasenia VARCHAR(32) NOT NULL
+  id_usuario INT AUTO_INCREMENT PRIMARY KEY, 
+  nombre_usuario VARCHAR(32) NOT NULL, 
+  contrasenia VARCHAR(32) NOT NULL,
+  h_entrada TIME NOT NULL, 
+  h_salida TIME NOT NULL
 );
 ````
 - TABLA USUARIOSROL:
