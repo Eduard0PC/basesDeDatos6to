@@ -4,65 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Han-Burguesa</title>
+    <link rel="stylesheet" href="css/miniapp/stylesch.css">
     <link rel="stylesheet" href="css/styles2.css">
     <link rel="stylesheet" href="css/stylebutton.css">
     <link rel="stylesheet" href="css/stylemsg.css">
+    <link rel="stylesheet" href="css/styleform.css">
 </head>
 <body>
     <aside class="sidebar">
         <button class="toggle-btn">
-            <img src="src/menu.png" alt="Menu">
+            <img src="src/icons/sidebar/menu.png" alt="Menu">
         </button>
         <ul>
-            <li id="homeBtn"><img src="src/homr.png" alt="Home" class="icon"> <span class="text">Home</span></li>
-            <li><img src="src/ventas.png" alt="Ventas" class="icon"> <span class="text">Ventas</span></li>
-            <li><img src="src/food.png" alt="Insumos" class="icon"> <span class="text">Insumos</span></li>
+            <li id="homeBtn"><img src="src/icons/sidebar/homr.png" alt="Home" class="icon"> <span class="text">Home</span></li>
+            <li id="insumosBtn">
+                <img src="src/icons/sidebar/food.png" alt="Insumos" class="icon">
+                <span class="text">Insumos</span>
+            </li>
+            <li id="ventasBtn">
+                <img src="src/icons/sidebar/ventas.png" alt="Ventas" class="icon">
+                <span class="text">Ventas</span>
+            </li>
             <li id="empleadosBtn">
-                <img src="src/empb.png" alt="Empleados" class="icon">
+                <img src="src/icons/sidebar/empb.png" alt="Empleados" class="icon">
                 <span class="text">Empleados</span>
             </li>
             <li id="logoutBtn">
-                <img src="src/logout_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="Salir" class="icon">
+                <img src="src/icons/sidebar/logout_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.png" alt="Salir" class="icon">
                 <span class="text">Salir</span>
             </li>
         </ul>
     </aside>
-    
-    <div class="content">
-        <div class="header">
-            <h1>Han-Burguesa</h1>
-            <div class="user">
-                <span id="welcome">Bienvenido</span>
-            </div>
+    <div class="header">
+        <h1>Han-Burguesa</h1>
+        <div class="user">
+            <span id="welcome">Bienvenido</span>
         </div>
+    </div>
+    <div class="content">
         <div class="card-table table-gen"></div>
-        <div class="allcards">
-            <div class="card card-insumos">
-                <img src="src/foodb.png" alt="Insumos" class="card-icon">
+        <div class="allcards">         
+            <div class="card card-insumos" id="insCard">
+                <img src="src/icons/foodb.png" alt="Insumos" class="card-icon">
                 <h3>Insumos</h3>
             </div>
-            <div class="card card-ventas">
-                <img src="src/ventasb.png" alt="Ventas" class="card-icon">
+            <div class="card card-ventas" id="venCard">
+                <img src="src/icons/ventasb.png" alt="Ventas" class="card-icon">
                 <h3>Ventas</h3>
             </div>
             <div class="card card-empleados green" id="empCard">
-                <img src="src/emp.png" alt="Empleados" class="card-icon">
+                <img src="src/icons/emp.png" alt="Empleados" class="card-icon">
                 <h3>Empleados</h3>
             </div>
             <div class="card card-punto-venta">
                 <h3>Punto De Venta</h3>
-                <img src="src/ponintsale.png" alt="Icono Punto de Venta">
+                <img src="src/icons/ponintsale.png" alt="Icono Punto de Venta">
                 <p id="current-time">--:-- --</p>
                 <p id="current-date">--/--/----</p>
                 <div class="whatsapp">
-                    <img src="src/eduardo.png" alt="WhatsApp">
+                    <img src="src/icons/wasap.png" alt="WhatsApp">
                     <p>999 327 2875</p>
                 </div>
             </div>
             <div class="card card-pedidos">
-                <!--Esto quedo cosa del pasado - RIP Sample Table 2025 - 2025 -->
+                <div class="img-loading"></div>
+                <!-- Esto quedo cosa del pasado - RIP Sample Table 2025 - 2025 -->
             </div>
         </div>
+        <div class="sys-forms"></div> 
+        <div class="obscure-background-overlay"></div>     
     </div>
     <script type="module" src="scripts.js"></script>
 </body>

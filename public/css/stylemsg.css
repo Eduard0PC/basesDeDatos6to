@@ -4,9 +4,9 @@
     color: white;
     padding: 4px;
     border-radius: 5px;
-    font-size: 12px;
+    font-size: 12pt;
     opacity: 0;
-    display: none;
+    display: flex;
     /*Cinematic*/
     transition: opacity 0.2s;
 }

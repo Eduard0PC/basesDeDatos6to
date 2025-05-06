@@ -1,0 +1,308 @@
+scheduler {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: auto;
+}
+
+.sch-header {
+    color: black;
+    justify-content: center;
+}
+
+.sch-container {
+    width: 650px;
+    padding-top: 30px;
+}
+
+.range {
+    --min: 0;
+    --max: 0;
+    --value: 0;
+}
+
+.timeline {
+    /*///////////////////VARIABLES///////////////////*/
+    /*Color primario*/
+    --primary-color: #295bff;
+
+    /*Barra*/
+    --bar-height: 65px;
+
+    /*Barra del tiempo diario */
+    --fill-color: var(--primary-color);
+    --timeprogress-background: #b4d7ff;
+    --timeprogress-radius: 10px;
+    --timeprogress-shadow: none;
+    --timeprogress-fill-shadow: none;
+
+    /*Indicadores de tiempo*/
+    --timemark-width: 50px; /*X*/
+    --timemark-height: 70px; /*Y*/
+    --timemark-color: var(--primary-color);
+
+    --timemark-shadow: 0 0 3px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.5) inset, 0 0 0 99px var(--timemark-color) inset;
+    --timemark-shadow-active: 0 0 0 calc(var(--timemark-width)/4) inset var(--timemark-color), 0 0 0 99px var(--timemark-color) inset, 0 0 3px rgba(0, 0, 0, 0.4);
+    --timemark-shadow-hover: var(--timemark-shadow);
+    
+    /*Marcas de tiempo*/
+    --mark-thickness: 1px;
+    /*Separación*/
+    --mark-height: 5px;
+    --mark-gap: var(--mark-height, 0);
+    --mark-color: silver;
+
+    /*Valores*/
+    --value-offset-y: var(--mark-gap);
+    --value-def-color: black;
+    --value-active-color: white;
+    --value-background: transparent;
+    --value-background-hover: var(--primary-color);
+    --value-font: 700 12px/1 Arial;
+
+    /*//////////////////VARIABLES ESCENCIALES////////////////////*/
+    --step: 1;
+    --lenght: calc(var(--max) - var(--min));
+    --marks-count: var(--lenght) / var(--step);
+    --max-marks: 30;
+    --too-many-marks: min(1, max(var(--marks-count) - var(--max-marks), 0)); /*Regresa booleano*/
+    --x-step: max(var(--step), var(--too-many-marks) * var(--lenght)); /*Regresa 1 en el caso que no hayan varios */
+    /*--markInterval: 100/ (var(--lenght) / var(--step));*/
+    --markIntervalPerc: calc((100% - var(--timemark-height))/ (var(--lenght)/var(--x-step)));
+    --value-a: clamp(
+        var(--min),
+        var(--value, 0),
+        var(--max)
+    );
+    --text-value-a: "";
+    
+    --value-b: var(--value, 0);
+    --text-value-b: "";
+    
+    --completed-a: calc((var(--value-a) - var(--min)) / var(--lenght) * 100);
+    --completed-b: calc((var(--value-b) - var(--min)) / var(--lenght) * 100);
+    
+    --ca: min(var(--completed-a), var(--completed-b));
+    --cb: max(var(--completed-a), var(--completed-b));
+        
+    --marks-too-close: clamp(
+        -1,
+        calc(1000 * (min(1, max(var(--cb) - var(--ca) - 5, -1)) + 0.001)),
+        1
+    );
+    --mark-close-to-min: min(1, max(var(--ca) - 2, 0)); /*2% de umbral*/
+    --mark-close-to-max: min(1, max(98 - var(--cb), 0)); /*2% de umbral*/
+            
+    /*Características*/
+    display: inline-block;
+    width: 100%;
+    height: max(var(--bar-height), var(--timemark-height));
+    background: linear-gradient(to right, var(--mark-color) var(--mark-thickness), transparent 1px) repeat-x;
+    background-size: var(--markIntervalPerc) var(--mark-height);
+    background-position-x: calc(var(--timemark-height)/2 - var(--mark-thickness)/2);
+    background-position-y: var(--flip-y, bottom);
+    padding-bottom: var(--flip-y, var(--mark-gap));
+    padding-top: calc(var(--flip-y) * var(--mark-gap));      
+    position: relative;
+    z-index: 1;
+}
+    
+.timeline[data-ticks-position="top"] {
+    --flip-y: 1;
+}
+
+.timeline::before, .timeline::after { 
+    --offset: calc(var(--timemark-width)/2);
+    --content: counter(x);
+    position: absolute;
+    bottom: var(--flip-y, -2.5ch);
+    top: var(-2,5ch * var(--flip-y));
+    pointer-events: none;
+}
+
+.timeline::before {
+    --before: 1;
+    --at-edge: var(--mark-close-to-min);
+    counter-reset: x var(--min);
+    left: var(--offset)
+}
+
+.timeline::after {
+    --at-edge: var(--mark-close-to-max);
+    counter-reset: x var(--max);
+    right: var(--offset);
+}
+
+.progress {
+    --start-end: calc(var(--timemark-width) / 2);
+    --clip-end: calc(100% - (var(--cb)) * 1%);
+    --clip-start: calc(var(--ca) * 1%);
+    --clip: inset(-20px var(--clip-end) -20px var(--clip-start));
+    position: absolute;
+    left: var(--start-end);
+    right: var(--start-end);
+    /*
+    left: 0;
+    right: 0;
+    */
+    top: calc(var(--mark-gap) * var(--flip-y, 0) + var(--timemark-height)/2 - var(--bar-height)/2);
+    
+    height: calc(var(--bar-height));
+    background: var(--timeprogress-background, #eee);
+    pointer-events: none;
+    border-radius: var(--timeprogress-radius);
+    z-index: -1;
+}
+
+/*LLenado*/
+.progress::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    clip-path: var(--clip);
+    top: 0;
+    bottom: 0;
+    background: var(--fill-color, black);
+    box-shadow: var(--timeprogress-fill-shadow);
+    border-radius: inherit;
+    z-index: 1;
+}
+
+/*Sombra*/
+.progress::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: var(--timeprogress-shadow);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.timeline>input{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: absolute;
+    width: 100%;
+    height: var(--timemark-height);
+    margin: 0;
+    left: 0;
+    top: calc(50% - max(var(--bar-height), var(--timemark-height)) / 2 + calc(var(--mark-gap) / 2 * var(--flip-y, -1)));
+    cursor: -webkit-grab;
+    cursor: grab;
+    outline: none;
+    background: none;
+}
+
+.timeline>input:not(:only-of-type) { 
+    pointer-events: none;
+}
+
+.timeline>input:hover { 
+    --timemark-shadow: var(--timemark-shadow-hover);
+}
+
+.timeline>input:hover+output {
+    --value-background: var(--value-background-hover);
+    --y-offset: -5px;
+    color: var(--value-active-color);
+    box-shadow: 0 0 0 3px var(--value-background);
+}
+
+.timeline>input:active {
+    --timemark-shadow: var(--timemark-shadow-active);
+    cursor: grabbing;
+    z-index: 2;
+}
+
+.timeline>input:active+output {
+    transition: 0s;
+}
+
+.timeline>input:nth-of-type(1) {
+    --is-left-most: clamp(0, calc((var(--value-a) - var(--value-b)) * 99999), 1);
+}
+
+.timeline>input:nth-of-type(1) + output {
+    --value: var(--value-a);
+    --x-offset: calc(var(--completed-a) * -1%);
+}
+
+.timeline>input:nth-of-type(1) + output:not(:only-of-type) {
+    --flip: calc(var(--marks-too-close) * -1);
+}
+
+.timeline>input:nth-of-type(1) + output::after {
+    content: var(--text-value-a);
+}
+
+.timeline>input:nth-of-type(2) {
+    --is-left-most: clamp(0, calc((var(--value-b) - var(--value-a)) * 99999), 1);
+}
+
+.timeline>input:nth-of-type(2) + output {
+    --value: var(--value-b);
+}
+
+.timeline>input:only-of-type ~ .progress {
+    --clip-start: 0;
+}
+/*Para el texto flotante*/
+.timeline>input + output {
+    --flip: -1;
+    --x-offset: calc(var(--completed-b) * -1%);
+    --pos: calc(((var(--value) - var(--min))/var(--lenght)) * 100%);
+
+    pointer-events: none;
+    position: absolute;
+    background: var(--value-background);
+    border-radius: 10px;
+    padding: 2px 4px;
+    left: var(--pos);
+    transform: translate(var(--x-offset), calc(150% * var(--flip) - (var(--y-offset, 0px) + var(--value-offset-y)) * var(--flip)));
+    color: var(--value-def-color);
+    transition: all 0.12s ease-out, left 0s;
+    z-index: 5;
+}
+
+.timeline>input + output::after {
+    content: var(--text-value-b);
+    font: var(--value-font);
+}
+/*Cosas del range-thumb caso por navegador*/
+.timeline>input::-webkit-slider-thumb { 
+    appearance: none;
+    height: var(--timemark-height);
+    width: var(--timemark-width);
+    background: var(--timemark-color);
+    box-shadow: var(--timemark-shadow);
+    border: none;
+    pointer-events: auto;
+    transition: 0.1s;
+}
+
+.timeline>input::-moz-range-thumb {
+    appearance: none;
+    height: var(--timemark-height);
+    width: var(--timemark-width);
+    background: var(--timemark-color);
+    box-shadow: var(--timemark-shadow);
+    border: none;
+    pointer-events: auto;
+    transition: 0.1s;
+}
+
+.timeline>input::-ms-thumb {
+    appearance: none;
+    height: var(--timemark-height);
+    width: var(--timemark-width);
+    background: var(--timemark-color);
+    box-shadow: var(--timemark-shadow);
+    border: none;
+    pointer-events: auto;
+    transition: 0.1s;
+}

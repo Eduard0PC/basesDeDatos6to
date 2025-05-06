@@ -1,4 +1,4 @@
-import { garantLoad, backtoHome, loadEmployees, loadOrders } from './loader.js';
+import { garantLoad, backtoHome, loadEmployees, loadSales, loadFood, loadOrders } from './loader.js';
 //Purikitaka ti purikitaka ta
 
 //Funcionalidad del sidebar
@@ -89,6 +89,12 @@ document.getElementById('homeBtn').addEventListener('click', ()=>(garantLoad(bac
 //MANEJO DEL BOTON EMPLEADOS
 document.getElementById('empleadosBtn').addEventListener('click', ()=>(garantLoad(loadEmployees)));
 
+//MANEJO DEL BOTON VENTAS
+document.getElementById('ventasBtn').addEventListener('click', ()=>(garantLoad(loadSales)));
+
+//MANEJO DEL BOTON INSUMOS
+document.getElementById('insumosBtn').addEventListener('click', ()=>(garantLoad(loadFood)));
+
 //MANEJO DEL BOTON DE CERRAR SESION
 document.getElementById('logoutBtn').addEventListener('click', async () => {
     const response = await fetch('/logout', {
@@ -110,4 +116,8 @@ loadOrders();
 //MANEJO DE LA CARD EMPLEADOS
 document.getElementById('empCard').addEventListener('click', ()=>(garantLoad(loadEmployees)));
 
-//MANEJO BOTONES
+//MANEJO DE LA CARD VENTAS
+document.getElementById('venCard').addEventListener('click', ()=>(garantLoad(loadSales)));
+
+//MANEJO DE LA CARD INSUMOS
+document.getElementById('insCard').addEventListener('click', ()=>(garantLoad(loadFood)));

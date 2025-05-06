@@ -1,21 +1,29 @@
+/*GENERALIDADES PENDIENTES
+-Refactorizacion en carga de funcionalidades
+-Integrar hide/show en una sola funcion (generalizar para cualquier elemento)
+-Reestringir funciones para que nadie pueda inyectar asi de facil codigo
+-Evitar que el codigo se repita en Sources aunque no es necesario*/
+
 //Utilidades
 let aborter = new AbortController(); //Para 'transacciones' en tablas
+
 //Funcion asegurar carga
 export function garantLoad(func){
     clearTable();
+    clearForms();
+    hideOverlay();
     func();
 }
+
 //Regresar a Home
 export async function backtoHome(){
     hideComponent(".table-gen");
-    showComponent(".card-insumos");
-    showComponent(".card-ventas");
-    showComponent(".card-empleados");
-    showComponent(".card-pedidos");
-    showComponent(".card-punto-venta");
-    loadOrders();
+    showGrid(".allcards");
+    showMainScroll();
+    closeMiniApps();
 }
-//Carga pedidos
+
+//Carga pedidos - Para estas funciones elimina el menu y carga la tabla
 export async function loadOrders(){
     const destiny_load = document.querySelector('.card-pedidos');
     fetch("table.html")
@@ -32,18 +40,16 @@ export async function loadOrders(){
     })
     .then(info=>{
         //Carga la información de la tabla
-        generateTable(info.title, info.header, info.dbresults);
+        generateTable('card-pedidos', info.title, info.header, info.dbresults);
     })
     .catch(error=>console.error("Error al cargar el contenido: ", error));
 }
-//Elimina todas las cartas y carga la tabla
+
+//Carga empleados
 export async function loadEmployees(){
     //FASE 1: BORRA
-    hideComponent(".card-insumos");
-    hideComponent(".card-ventas");
-    hideComponent(".card-empleados");
-    hideComponent(".card-pedidos");
-    hideComponent(".card-punto-venta");
+    hideComponent(".allcards");
+    hideMainScroll();
     //FASE 2: CARGA
     try{
         const destiny_load = document.querySelector('.table-gen');
@@ -54,11 +60,15 @@ export async function loadEmployees(){
         }
         //Contacto con la base de datos
         const info = await connect('/see-empleados');
+        //CARGA DE COMPONENTES
         //Genera la tabla con el contenido
-        generateTable(info.title, info.header, info.dbresults);
-        //Espero la carga de botones
-        await generateActionsFooter('.test');
+        generateTable('table-gen', info.title, info.header, info.dbresults);
         await addtableFeat('.button-mesh-emp-control',"Acciones");
+        //Genera acciones del pie de página
+        await generateActionsFooter('table-gen','.std-buttons.emps');
+        //Genera los formularios y cosas relacionadas
+        await generateForm('.add-emp-form');
+        await loadMiniApp('scheduler');
         //Añado eventos
         addEventsEmployees();
         destiny_load.style.display="flex";
@@ -66,33 +76,144 @@ export async function loadEmployees(){
         console.error("Error al cargar contenido: ", error);
     }
 }
-//Elimina usuarios - Funcion inestable
+
+//Carga ventas
+export async function loadSales(){
+    //FASE 1: Borra
+    hideComponent(".allcards");
+    hideMainScroll();
+    //FASE 2: Carga
+    const destiny_load = document.querySelector('.table-gen');
+    fetch("table.html")
+        .then(response => {
+            if(response.ok){
+                return response.text();
+            }
+        })
+        .then(data=>{
+            //Carga la plantilla
+            destiny_load.innerHTML=data;
+            //Contacto con la base de datos
+            return connect('/see-ventas');
+        })
+        .then(info=>{
+            //Carga la información de la tabla
+            generateTable('table-gen', info.title, info.header, info.dbresults);
+            //Mostrar
+            destiny_load.style.display="flex";
+        })
+        .catch(error=>console.error("Error al cargar contenido: ", error));
+}
+
+//Carga insumos
+export async function loadFood(){
+    //FASE 1: Borra
+    hideComponent(".allcards");
+    hideMainScroll();
+    //FASE 2: CARGA
+    try{
+        const destiny_load = document.querySelector('.table-gen');
+        //Carga la plantilla
+        const response = await fetch("table.html");
+        if(response.ok){
+            destiny_load.innerHTML= await response.text();
+        }
+        //Contacto con la base de datos
+        const info = await connect('/see-insumos');
+        //Genera la tabla con el contenido
+        generateTable('table-gen', info.title, info.header, info.dbresults);
+        //Espero la carga de botones
+        await generateActionsFooter('table-gen','.standard-buttons');
+        destiny_load.style.display="flex";
+    }catch (error){
+        console.error("Error al cargar contenido: ", error);
+    }
+}
+
+//Carga las entradas y salidas de empleados
+async function loadTimeEmployees(){
+    try{
+        const destiny_load = document.querySelector('.table-gen');
+        //Carga la plantilla
+        const response = await fetch("table.html");
+        if(response.ok){
+            destiny_load.innerHTML= await response.text();
+        }
+        //Contacto con la base de datos
+        const info = await connect('/see-time-empleados');
+        //CARGA DE COMPONENTES
+        //Genera la tabla con el contenido
+        generateTable('table-gen', info.title, info.header, info.dbresults);
+        //Genera acciones del pie de página
+        await generateActionsFooter('table-gen', '.std-buttons.timeemps');
+        //Añado eventos
+        addEventsTimeEmployees();
+        destiny_load.style.display="flex";
+    }catch (error){
+        console.error("Error al cargar contenido: ", error);
+    }
+}
+
+//Carga miniapps
+async function loadMiniApp(miniapp){
+    function createNewScript() {
+        //setup del script
+        let script = document.createElement("script");
+        script.classList = "miniapp";
+        script.type = "module";
+        //Asegura que el script no se guarde el cache - me falta contexto
+        script.src = miniapp+'.js' + '?t='+new Date().getTime();
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+    try{
+        const container = document.querySelectorAll(miniapp);
+        const response = await fetch(miniapp+'.html');
+        if(response.ok){
+            for (const minapp of container) {
+                minapp.innerHTML = await response.text();
+            }
+        }
+        //Busca el script que se acabo de generar y lo destruyo, luego lo vuelvo a crear
+        const oldScript = document.querySelector('script[src^="'+miniapp+'.js"]');
+        if(oldScript){
+            oldScript.remove();
+        }
+        createNewScript();  
+    }catch(error){
+        console.error("Error al cargar aplicación: ", error);
+    }
+}
+
+//Cierra todas las apps
+function closeMiniApps(){
+    const minapps = document.querySelectorAll('.miniapp');
+    for(const minapp of minapps) {
+        minapp.remove();
+    }
+}
+
+//Elimina usuarios - Funcion inestable - Cuidado con clickear
 async function deleteUser(button) {
     const info = findInfoinRow(button, "ID del sistema");
     const format = {id: info};
     await connectnSubmit('/delete-user', format);
     //Recarga
-    loadEmployees();
+    garantLoad(()=>(loadEmployees()));
 }
+
 //Genera QR
 async function generateQR(button) {
     const idEmpleado = findInfoinRow(button, "ID del sistema"); // Obtiene el ID de la fila
     if (!idEmpleado) return alert("No se pudo obtener el ID del empleado");
-
     try {
-        const response = await fetch('/generate-qr', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: idEmpleado })
-        });
-
-        const data = await response.json();
+        const data = await connectnSubmit('/generate-qr', {id: idEmpleado});
         if (data.qrCode) {
             // Crear y mostrar la imagen del QR en un contenedor
-            const qrContainer = document.getElementById("qr-container"); 
             const qrImage = document.getElementById("qr-image");
             qrImage.src = data.qrCode;  // Asigna la URL del QR a una imagen
-            qrContainer.style.display = "flex"; //cosillas de CSS ()
+            showPopUp('#qr-container');
+            addEventsQR();
         } else {
             alert("Error al generar el QR");
         }
@@ -101,6 +222,58 @@ async function generateQR(button) {
         console.error("Error al obtener el QR:", error);
     }
 }
+
+//Añade usuarios - Falta validacion robusta
+async function addUser(event) {
+    event.preventDefault();
+    const filter = /^['"]|['"]$/g;
+    const style = getComputedStyle(document.querySelector('.sch-timeline'));
+    const username = document.getElementById('nwuser').value;
+    const password = document.getElementById('nwpswd').value;
+    const role = document.getElementById('nwrole').value;
+    const schstart = style.getPropertyValue('--text-value-a').replaceAll(filter, '');
+    const schend = style.getPropertyValue('--text-value-b').replaceAll(filter, '');
+    const format= {username: username, pswd: password, role: role, hinit: schstart, hfinale: schend};
+    await connectnSubmit('/add-user', format);
+    //Recarga
+    garantLoad(()=>(loadEmployees()));
+}
+
+//Muestra el formulario en cuestion
+function showForm(form) {
+    const destiny_load = document.querySelector('.'+form);
+    showOverlay();
+    destiny_load.style.display="flex";
+}
+
+//Oculta el formulario en cuestión
+function closeForm(form) {
+    const destiny_load = document.querySelector('.'+form)
+    hideOverlay();
+    destiny_load.style.display="none";
+}
+
+//Cierra todos los formularios y se tienen que volver a cargar las apps
+function clearForms() {
+    const target = document.querySelector('.sys-forms');
+    target.innerHTML='';
+}
+
+//Añadir formulario
+async function addForm(form){
+    try{
+        const actions = document.createElement("div");
+        const response = await fetch("forms.html");
+        if(response.ok){
+            actions.innerHTML = await response.text();
+        }
+        const target = actions.querySelector(form);
+        return target.cloneNode(true);
+    }catch(error){
+        console.error("Error al cargar contenido: ", error);
+    }  
+}
+
 //Añadir botones
 async function addActions(button){
     try{
@@ -115,10 +288,15 @@ async function addActions(button){
         console.error("Error al cargar contenido: ", error);
     }
 }
+
 //FUNCIONES DE EVENTOS ADICIONALES
 function addEventsEmployees(){
     const btn1 = document.querySelectorAll("#empDelete");
     const btn2 = document.querySelectorAll("#empQR");
+    const btn3 = document.getElementById("empAdd");
+    const btn4 = document.getElementById("empAddClose");
+    const btn5 = document.getElementById("empTime");
+    const form = document.querySelector('.add-emp-form');
     btn1.forEach(btn=>{
         btn.addEventListener('click', ()=>(deleteUser(btn)));
         btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
@@ -129,43 +307,100 @@ function addEventsEmployees(){
         btn.addEventListener('mouseover', ()=>(showMSG(btn, 'msg-handler')));
         btn.addEventListener('mouseout', ()=>(hideMSG('msg-handler')));
     })
+    btn3.addEventListener('click', ()=>(showForm('add-emp-form')));
+    btn4.addEventListener('click', ()=>(closeForm('add-emp-form')));
+    btn5.addEventListener('click', ()=>(loadTimeEmployees()));
+    form.addEventListener('submit', (event)=>(addUser(event)));
 }
-//FUNCIONES DE COMPONENTES
-//AKA Component birthmaker - Buffed
-function showComponent(componentname){
-    const component = document.querySelector(componentname);
-    component.style.display="flex";
+
+function addEventsTimeEmployees(){
+    const btn1 = document.getElementById("empBack");
+    btn1.addEventListener('click', ()=>(loadEmployees()));
 }
-//AKA Component Terminator - Nerfed
-function hideComponent(componentname){
-    const component = document.querySelector(componentname);
-    component.style.display = "none";
+
+function addEventsQR(){
+    const qrbtn1 = document.getElementById("button-close-qr");
+    qrbtn1.addEventListener('click', ()=>(hidePopUp('#qr-container')));
 }
+
 //Muestra mensajes
 function showMSG(button, handler){
     const tooltip = document.getElementById(handler);
     const coors = button.getBoundingClientRect();
     tooltip.textContent=button.dataset.msg;
     tooltip.style.opacity=1;
-    tooltip.style.display="flex";
 }
+
 //Esconde mensajes
 function hideMSG(handler){
     const tooltip = document.getElementById(handler);
     tooltip.style.opacity=0;
-    tooltip.style.display="none";
 }
+
+//Muestra ventanas flotantes
+function showPopUp(componentname){
+    const component = document.querySelector(componentname);
+    component.style.transform='scale(1)';
+}
+function hidePopUp(componentname){
+    const component = document.querySelector(componentname);
+    component.style.transform='scale(0)';
+}
+
+//Muestra el tablero correctamente
+function showGrid(grid) {
+    const sgrid = document.querySelector(grid);
+    sgrid.style.display="grid";
+}
+
+//AKA Component birthmaker - Buffed
+function showComponent(componentname){
+    const component = document.querySelector(componentname);
+    component.style.display="flex";
+}
+
+//AKA Component Terminator - Nerfed
+function hideComponent(componentname){
+    const component = document.querySelector(componentname);
+    component.style.display="none";
+}
+
+//Cosos de scroll
+function showMainScroll(){
+    document.body.style.overflow="auto";
+}
+function hideMainScroll(){
+    document.body.style.overflow="hidden";
+}
+
+//Cosas del overlay
+function showOverlay(){
+    const ly = document.querySelector('.obscure-background-overlay');
+    ly.style.display="flex";
+}
+function hideOverlay(){
+    const ly = document.querySelector('.obscure-background-overlay');
+    ly.style.display="none";
+}
+
 //FUNCIONES TABLAS
 //Limpiar tabla
 function clearTable(){
     const destiny_load = document.querySelector('.table-gen');
     destiny_load.innerHTML='';
-} 
-//Generar tabla
-function generateTable(title, header, data){
+}
+
+//Nose si vaya a necesitar estas funciones después
+function clearInnerTable(section, table){
+    const destiny_load = document.querySelector('.'+section+' .'+table);
+    destiny_load.innerHTML='';
+}
+
+//Generar tabla - Quizas necesite una modificacion
+function generateTable(section, title, header, data){
     //Buscar en table.html
-    const destiny_load1 = document.querySelector('.table-title');
-    const destiny_load2 = document.querySelector('.sys-table');
+    const destiny_load1 = document.querySelector('.'+section+' .table-title');
+    const destiny_load2 = document.querySelector('.'+section+' .sys-table');
     //Añadir título en table.html
     destiny_load1.innerHTML = title;
     const tableh = document.createElement("thead");
@@ -191,6 +426,7 @@ function generateTable(title, header, data){
     });
     destiny_load2.appendChild(tableb);
 }
+
 //Poner columna adicional y funcionalidad custom
 async function addtableFeat(actions, headtitle){
     //Buscar en table.html
@@ -212,6 +448,8 @@ async function addtableFeat(actions, headtitle){
     //Aterrizar para que la función espere
     return "Terminado";
 }
+
+//Encuentra un data según el boton, encabezado/columna
 function findInfoinRow(button, headerName=null, colIndex=null){
     const locrow=button.closest("tr");
     const cells=locrow.querySelectorAll("td");
@@ -234,14 +472,24 @@ function findInfoinRow(button, headerName=null, colIndex=null){
     }
     return null;
 }
+
 //OTRAS COSAS
-//Cargar botones para el footer de la tabla - NO TERMINADO
-async function generateActionsFooter(actions){
-    const destiny_load = document.querySelector('.sys-actions-footbar');
+//Cargar botones para el footer de la tabla
+async function generateActionsFooter(section, actions){
+    const destiny_load = document.querySelector('.'+section+' .sys-actions-footbar');
     const feat = await addActions(actions);
     destiny_load.appendChild(feat);
     return "Terminado";
 }
+
+//Cargar botones para los formularios
+async function generateForm(form){
+    const destiny_load = document.querySelector('.sys-forms');
+    const feat = await addForm(form);
+    destiny_load.appendChild(feat);
+    return "Terminado";
+}
+
 //Función general para sacar la información de un método
 async function connect(jmethod){
     //Cancelo la solicitud anterior
@@ -260,7 +508,8 @@ async function connect(jmethod){
         if (error=='AbortError'){console.log("Solicitud cancelada")}
     }
 }
-//Función para una 'transacción'
+
+//Función para entregar datos y ejecutar un método
 async function connectnSubmit(jmethod, info){
     //Cancelo la solicitud anterior
     aborter.abort();
