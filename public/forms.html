@@ -28,4 +28,178 @@
             <button class="form-button accept" type="submit">Añadir</button>
         </div>
     </form>
+<<<<<<< HEAD
+=======
+</div>
+
+<div class="add-insumo-form sys-form">
+    <div class="form-header">
+        <h2>Añadir Insumo</h2>
+        <button class="form-close" id="addInsumoClose">
+            <img src="src/icons/close.svg">
+        </button>
+    </div>
+    <form>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="insumoName">Nombre del Insumo:</label>
+                <input type="text" id="insumoName" placeholder="Nombre del insumo" required>
+            </div>
+            <div class="options">
+                <label for="insumoUnit">Unidad de Medida:</label>
+                <input type="text" id="insumoUnit" placeholder="Unidad de medida" maxlength="2" required>
+            </div>
+        </div>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="insumoExpiry">Fecha de Caducidad:</label>
+                <input type="date" id="insumoExpiry" required>
+            </div>
+            <div class="options">
+                <label for="insumoQuantity">Cantidad:</label>
+                <input type="number" id="insumoQuantity" placeholder="Cantidad" required>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button accept" type="submit" id="addInsumoSubmit">Añadir</button>
+        </div>
+    </form>
+</div>
+
+<div class="edit-insumo-form sys-form">
+    <div class="form-header">
+        <h2>Modificar Insumo</h2>
+        <button class="form-close" id="editInsumoClose"> <!-- Unique ID -->
+            <img src="src/icons/close.svg">
+        </button>
+    </div>
+    <form>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="editInsumoId">ID del Insumo:</label>
+                <input type="text" id="editInsumoId" readonly>
+            </div>
+            <div class="options">
+                <label for="editInsumoName">Nombre del Insumo:</label>
+                <input type="text" id="editInsumoName" required>
+            </div>
+        </div>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="editInsumoUnit">Unidad de Medida:</label>
+                <input type="text" id="editInsumoUnit" maxlength="2" required>
+            </div>
+            <div class="options">
+                <label for="editInsumoExpiry">Fecha de Caducidad:</label>
+                <input type="date" id="editInsumoExpiry" required>
+            </div>
+        </div>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="editInsumoQuantity">Cantidad:</label>
+                <input type="number" id="editInsumoQuantity" required>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button accept" type="submit" id="editInsumoSubmit">Modificar</button>
+        </div>
+    </form>
+</div>
+
+<div class="add-plato-form sys-form">
+    <div class="form-header">
+        <h2>Añadir plato</h2>
+        <button class="form-close" id="addPlatoClose">
+            <img src="src/icons/close.svg">
+        </button>
+    </div>
+    <form>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="platoNombre">Nombre del plato:</label>
+                <input type="text" id="platoNombre" placeholder="Nombre del plato" required>
+            </div>
+            <div class="options">
+                <label for="platoPrecio">Precio del plato:</label>
+                <input type="number" id="platoPrecio" placeholder="Precio del plato" required>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button accept" type="submit" id="addPlatoSubmit">Añadir</button>
+        </div>
+    </form>
+</div>
+
+<div class="sys-form edit-plato-form">
+    <div class="form-header">
+        <h2>Modificar plato</h2>
+        <button class="form-close" id="editPlatoClose"> <!-- Unique ID -->
+            <img src="src/icons/close.svg">
+        </button>
+    </div>
+    <form>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="editPlatoId">ID del alimento:</label>
+                <input type="text" id="editPlatoId" readonly>
+            </div>
+            <div class="options">
+                <label for="editPlatoNombre">Nombre del plato:</label>
+                <input type="text" id="editPlatoNombre" required>
+            </div>
+        </div>
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="editPlatoPrecio">Precio:</label>
+                <input type="number" id="editPlatoPrecio" required>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="form-button accept" type="submit" id="editPlatoSubmit">Modificar</button>
+        </div>
+    </form>
+</div>
+
+<div class="add-pedido-form sys-form">
+    <div class="form-header">
+        <h2>Añadir nuevo pedido</h2>
+        <button class="form-close" id="addPedidoClose">
+            <img src="src/icons/close.svg">
+        </button>
+    </div>
+    <form id="pedidoForm">
+        <!-- Client Information -->
+        <div class="top-fields">
+            <div class="general-form-data">
+                <label for="nombreCliente">Nombre del Cliente:</label>
+                <input type="text" id="nombreCliente" placeholder="Nombre del cliente" required>
+            </div>
+            <div class="options">
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" placeholder="Dirección" required>
+            </div>
+        </div>
+
+        <!-- Alimentos Section -->
+        <div id="alimentosContainer">
+            <div class="alimento-entry">
+                <label for="alimento">Alimento:</label>
+                <select class="alimento" required>
+                    <!-- Options will be dynamically populated -->
+                </select>
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" class="cantidad" min="1" required>
+                <label for="total">Total:</label>
+                <input type="text" class="total" readonly>
+                <button type="button" class="remove-alimento">Eliminar</button>
+            </div>
+        </div>
+        <button type="button" id="addAlimento">Añadir Alimento</button>
+
+        <!-- Submit Section -->
+        <div class="form-actions">
+            <button class="form-button accept" type="submit" id="submitPedido">Realizar Pedido</button>
+        </div>
+    </form>
+>>>>>>> Coolthread80/main
 </div>

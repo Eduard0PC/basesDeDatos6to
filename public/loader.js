@@ -24,25 +24,64 @@ export async function backtoHome(){
 }
 
 //Carga pedidos - Para estas funciones elimina el menu y carga la tabla
-export async function loadOrders(){
-    const destiny_load = document.querySelector('.card-pedidos');
-    fetch("table.html")
-    .then(response =>{
-        if(response.ok){
-            return response.text();
+export async function loadOrders() {
+    const destiny_load = document.querySelector(".card-pedidos");
+    try {
+        // Load the table template
+        const response = await fetch("table.html");
+        if (response.ok) {
+            destiny_load.innerHTML = await response.text();
         }
-    })
-    .then(data=>{
-        //Carga la plantilla
-        destiny_load.innerHTML=data;
-        //Contacto con la base de datos
-        return connect('/see-pedidos');
-    })
-    .then(info=>{
-        //Carga la información de la tabla
-        generateTable('card-pedidos', info.title, info.header, info.dbresults);
-    })
-    .catch(error=>console.error("Error al cargar el contenido: ", error));
+
+        // Fetch orders data
+        const info = await connect("/see-pedidos");
+
+        // Generate the table
+        generateTable("card-pedidos", info.title, info.header, info.dbresults);
+
+        // Add footer buttons
+        const footer = document.createElement("div");
+        footer.classList.add("sys-actions-footbar");
+        footer.innerHTML = `
+            <button id="markDelivered" class="deliver-button accept">Marcar como entregado</button>
+        `;
+        destiny_load.appendChild(footer);
+
+        // Add event listeners
+        addEventsPedidos();
+        destiny_load.style.display = "flex";
+    } catch (error) {
+        console.error("Error al cargar contenido: ", error);
+    }
+}
+
+function addEventsPedidos() {
+    const markDeliveredButton = document.getElementById("markDelivered");
+
+    markDeliveredButton.addEventListener("click", async () => {
+        const selectedRow = document.querySelector(".card-pedidos .sys-table tr.selected-row"); // Find the selected row
+        if (!selectedRow) {
+            alert("Seleccione un pedido para marcar como entregado.");
+            return;
+        }
+
+        const id_pedido = findInfoinRow(selectedRow, "ID Pedido"); // Get the ID of the selected row
+        if (!id_pedido) {
+            alert("No se pudo obtener el ID del pedido.");
+            return;
+        }
+
+        if (confirm("¿Está seguro de marcar este pedido como entregado?")) {
+            try {
+                await connectnSubmit("/delete-pedido", { id_pedido });
+                selectedRow.remove(); // Remove the row from the table
+                alert("Pedido marcado como entregado.");
+            } catch (error) {
+                console.error("Error al marcar como entregado:", error);
+                alert("Hubo un error al marcar el pedido como entregado.");
+            }
+        }
+    });
 }
 
 //Carga empleados
@@ -78,54 +117,61 @@ export async function loadEmployees(){
 }
 
 //Carga ventas
-export async function loadSales(){
-    //FASE 1: Borra
+export async function loadSales() {
+    // FASE 1: Clear previous content
     hideComponent(".allcards");
     hideMainScroll();
-    //FASE 2: Carga
-    const destiny_load = document.querySelector('.table-gen');
-    fetch("table.html")
-        .then(response => {
-            if(response.ok){
-                return response.text();
-            }
-        })
-        .then(data=>{
-            //Carga la plantilla
-            destiny_load.innerHTML=data;
-            //Contacto con la base de datos
-            return connect('/see-ventas');
-        })
-        .then(info=>{
-            //Carga la información de la tabla
-            generateTable('table-gen', info.title, info.header, info.dbresults);
-            //Mostrar
-            destiny_load.style.display="flex";
-        })
-        .catch(error=>console.error("Error al cargar contenido: ", error));
+
+    // FASE 2: Load new content
+    try {
+        const destiny_load = document.querySelector(".table-gen");
+        const response = await fetch("table.html");
+        if (response.ok) {
+            destiny_load.innerHTML = await response.text();
+        }
+
+        // Fetch sales data
+        const info = await connect("/see-ventas");
+
+        // Generate the table
+        generateTable("table-gen", info.title, info.header, info.dbresults);
+
+        // Add footer buttons and forms
+        await generateActionsFooter("table-gen", ".std-buttons-ins.ven");
+        await generateForm(".add-plato-form");
+        await generateForm(".edit-plato-form");
+        await generateForm(".add-pedido-form");
+        addEventsVentas();
+        destiny_load.style.display = "flex";
+    } catch (error) {
+        console.error("Error al cargar contenido: ", error);
+    }
 }
 
 //Carga insumos
-export async function loadFood(){
-    //FASE 1: Borra
+export async function loadFood() {
+    // FASE 1: Borra
     hideComponent(".allcards");
     hideMainScroll();
-    //FASE 2: CARGA
-    try{
-        const destiny_load = document.querySelector('.table-gen');
-        //Carga la plantilla
+    // FASE 2: CARGA
+    try {
+        const destiny_load = document.querySelector(".table-gen");
+        // Carga la plantilla
         const response = await fetch("table.html");
-        if(response.ok){
-            destiny_load.innerHTML= await response.text();
+        if (response.ok) {
+            destiny_load.innerHTML = await response.text();
         }
-        //Contacto con la base de datos
-        const info = await connect('/see-insumos');
-        //Genera la tabla con el contenido
-        generateTable('table-gen', info.title, info.header, info.dbresults);
-        //Espero la carga de botones
-        await generateActionsFooter('table-gen','.standard-buttons');
-        destiny_load.style.display="flex";
-    }catch (error){
+        // Contacto con la base de datos
+        const info = await connect("/see-insumos");
+        // Genera la tabla con el contenido
+        generateTable("table-gen", info.title, info.header, info.dbresults);
+        // Espero la carga de botones
+        await generateActionsFooter('table-gen', '.std-buttons-ins.ins');
+        await generateForm('.add-insumo-form');
+        await generateForm('.edit-insumo-form');
+        addEventsInsumos();
+        destiny_load.style.display = "flex";
+    } catch (error) {
         console.error("Error al cargar contenido: ", error);
     }
 }
@@ -201,6 +247,14 @@ async function deleteUser(button) {
     //Recarga
     garantLoad(()=>(loadEmployees()));
 }
+//Añade insumos
+async function AddIns(button) {
+    const info = findInfoinRow(button, "ID del sistema");
+    const format = {id: info};
+    await connectnSubmit('/add-insumos', format);
+    //Recarga
+    garantLoad(()=>(loadFood()));
+}
 
 //Genera QR
 async function generateQR(button) {
@@ -242,8 +296,8 @@ async function addUser(event) {
 //Muestra el formulario en cuestion
 function showForm(form) {
     const destiny_load = document.querySelector('.'+form);
-    showOverlay();
     destiny_load.style.display="flex";
+    showOverlay();
 }
 
 //Oculta el formulario en cuestión
@@ -323,6 +377,326 @@ function addEventsQR(){
     qrbtn1.addEventListener('click', ()=>(hidePopUp('#qr-container')));
 }
 
+function addEventsInsumos() {
+    const addButton = document.getElementById("addButton");
+    const editButton = document.getElementById("editButton");
+    const deleteButton = document.getElementById("deleteButton");
+    const addForm = document.querySelector(".add-insumo-form");
+    const editForm = document.querySelector(".edit-insumo-form");
+    const searchBar = document.getElementById("searchBar");
+
+    // Add Insumo Button
+    addButton.addEventListener("click", () => showForm("add-insumo-form"));
+    document.getElementById("addInsumoClose").addEventListener("click", () => closeForm("add-insumo-form"));
+
+    // Edit Insumo Button
+    editButton.addEventListener("click", () => {
+        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+        if (!selectedRow) {
+            alert("Seleccione un insumo para editar. Tonotito");
+            return;
+        }
+
+        // Populate Edit Form
+        const id = findInfoinRow(selectedRow, "ID del sistema");
+        const name = findInfoinRow(selectedRow, "Nombre");
+        const unit = findInfoinRow(selectedRow, "Unidad de medida");
+        const expiry = findInfoinRow(selectedRow, "Fecha de Caducidad");
+        const quantity = findInfoinRow(selectedRow, "Cantidad restante");
+
+        // Fill form fields
+        document.getElementById("editInsumoId").value = id;
+        document.getElementById("editInsumoName").value = name;
+        document.getElementById("editInsumoUnit").value = unit;
+        document.getElementById("editInsumoExpiry").value = expiry;
+        document.getElementById("editInsumoQuantity").value = quantity;
+
+        showForm("edit-insumo-form");
+    });
+
+    document.getElementById("editInsumoClose").addEventListener("click", () => closeForm("edit-insumo-form"));
+
+    // Delete Insumo Button
+    deleteButton.addEventListener("click", async () => {
+        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+        if (!selectedRow) {
+            alert("Seleccione un insumo para eliminar. Tonotote");
+            return;
+        }
+
+        const id_insumo = findInfoinRow(selectedRow, "ID del sistema");
+        if (confirm("¿Está seguro de eliminar este insumo?")) {
+            await connectnSubmit("/delete-insumos", { id_insumo });
+            garantLoad(() => loadFood());
+        }
+    });
+
+    async function connect(url, data = {}) {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+    
+        if (!response.ok) {
+            console.error("Error fetching data:", response.statusText);
+            return null;
+        }
+    
+        return await response.json();
+    }
+    
+    // Example usage for live search
+    searchBar.addEventListener("input", async () => {
+        const searchTerm = searchBar.value.trim();
+        const info = await connect("/search-insumos", { searchTerm });
+        if (info) {
+            generateTable("table-gen", info.title, info.header, info.dbresults);
+        }
+    });
+
+    // Form Submit Handlers
+    addForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const nombre_insumo = document.getElementById("insumoName").value;
+        const unidad_medida = document.getElementById("insumoUnit").value;
+        const caducidad = document.getElementById("insumoExpiry").value;
+        const cantidad = document.getElementById("insumoQuantity").value;
+
+        await connectnSubmit("/add-insumos", { nombre_insumo, unidad_medida, caducidad, cantidad });
+        garantLoad(() => loadFood());
+    });
+
+    editForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const id_insumo = document.getElementById("editInsumoId").value;
+        const nombre_insumo = document.getElementById("editInsumoName").value;
+        const unidad_medida = document.getElementById("editInsumoUnit").value;
+        const caducidad = document.getElementById("editInsumoExpiry").value;
+        const cantidad = document.getElementById("editInsumoQuantity").value;
+
+        await connectnSubmit("/edit-insumos", { id_insumo, nombre_insumo, unidad_medida, caducidad, cantidad });
+        garantLoad(() => loadFood());
+    });
+}
+
+function addEventsVentas() {
+    const addButton = document.getElementById("addPButton");
+    const editButton = document.getElementById("editPButton");
+    const deleteButton = document.getElementById("deletePButton");
+    const addForm = document.querySelector(".add-plato-form");
+    const editForm = document.querySelector(".edit-plato-form");
+    const pedidoForm = document.querySelector(".add-pedido-form");
+    const searchBar = document.getElementById("searchPBar");
+    const addPedido = document.getElementById("addPedido");
+
+    // Add Insumo Button
+    addButton.addEventListener("click", () => showForm("add-plato-form"));
+    document.getElementById("addPlatoClose").addEventListener("click", () => closeForm("add-plato-form"));
+
+    // Add Pedido Button
+    // Add Pedido Button
+    addPedido.addEventListener("click", async () => {
+        await populateAlimentosDropdown();
+        showForm("add-pedido-form");
+    });
+
+    document.getElementById("addPedidoClose").addEventListener("click", () => closeForm("add-pedido-form"));
+
+    // Edit Insumo Button
+    editButton.addEventListener("click", () => {
+        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+        if (!selectedRow) {
+            alert("Seleccione un plato para editar. Tonotito");
+            return;
+        }
+
+        // Populate Edit Form
+        const id = findInfoinRow(selectedRow, "ID del alimento");
+        const name = findInfoinRow(selectedRow, "Nombre del plato");
+        const price = findInfoinRow(selectedRow, "Precio");
+
+        // Fill form fields
+        document.getElementById("editPlatoId").value = id;
+        document.getElementById("editPlatoNombre").value = name;
+        document.getElementById("editPlatoPrecio").value = price;
+
+        showForm("edit-plato-form");
+    });
+
+    document.getElementById("editPlatoClose").addEventListener("click", () => closeForm("edit-plato-form"));
+
+    // Delete Insumo Button
+    deleteButton.addEventListener("click", async () => {
+        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+        if (!selectedRow) {
+            alert("Seleccione un plato para eliminar. Tonotote");
+            return;
+        }
+
+        const id_alimento = findInfoinRow(selectedRow, "ID del alimento");
+        if (confirm("¿Está seguro de eliminar este plato?")) {
+            await connectnSubmit("/delete-ventas", { id_alimento });
+            garantLoad(() => loadSales());
+        }
+    });
+
+    async function connect(url, data = {}) {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+    
+        if (!response.ok) {
+            console.error("Error fetching data:", response.statusText);
+            return null;
+        }
+    
+        return await response.json();
+    }
+    
+    // Example usage for live search
+    searchBar.addEventListener("input", async () => {
+        const searchTerm = searchBar.value.trim();
+        const info = await connect("/search-ventas ", { searchTerm });
+        if (info) {
+            generateTable("table-gen", info.title, info.header, info.dbresults);
+        }
+    });
+
+    // Form Submit Handlers
+    addForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const nombre_alimento = document.getElementById("platoNombre").value;
+        const precio_alimento = document.getElementById("platoPrecio").value;
+
+        await connectnSubmit("/add-ventas", { nombre_alimento, precio_alimento });
+        garantLoad(() => loadSales());
+    });
+
+    editForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const id_alimento = document.getElementById("editPlatoId").value;
+        const nombre_alimento = document.getElementById("editPlatoNombre").value;
+        const precio_alimento = document.getElementById("editPlatoPrecio").value;
+
+        await connectnSubmit("/edit-ventas", { id_alimento, nombre_alimento, precio_alimento });
+        garantLoad(() => loadSales());
+    });
+
+    // Handle Pedido Form Submission
+    pedidoForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const nombreCliente = document.getElementById("nombreCliente").value;
+        const direccion = document.getElementById("direccion").value;
+
+        const alimentos = Array.from(document.querySelectorAll(".alimento-entry")).map(entry => {
+            return {
+                id_alimento: entry.querySelector(".alimento").value,
+                cantidad: entry.querySelector(".cantidad").value,
+                total: parseFloat(entry.querySelector(".total").value.replace("$", ""))
+            };
+        });
+
+        const payload = {
+            nombre_cliente: nombreCliente,
+            direccion: direccion,
+            alimentos: alimentos
+        };
+
+        try {
+            await fetch("/add-pedido", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            alert("Pedido realizado con éxito");
+            garantLoad(() => loadSales());
+        } catch (error) {
+            console.error("Error al realizar el pedido:", error);
+            alert("Hubo un error al realizar el pedido.");
+        }
+    });
+    
+}
+
+// Fetch Alimentos from the server
+async function fetchAlimentos() {
+    const response = await fetch("/get-alimentos");
+    if (!response.ok) {
+        console.error("Error fetching alimentos:", response.statusText);
+        return [];
+    }
+    return await response.json();
+}
+
+// Populate the Alimentos dropdown
+async function populateAlimentosDropdown() {
+    const alimentos = await fetchAlimentos();
+    const alimentosContainer = document.getElementById("alimentosContainer");
+
+    // Clear existing entries
+    alimentosContainer.innerHTML = "";
+
+    // Add a default Alimento entry
+    const alimentoEntry = createAlimentoEntry(alimentos);
+    alimentosContainer.appendChild(alimentoEntry);
+
+    // Add functionality to dynamically add more Alimento entries
+    document.getElementById("addAlimento").addEventListener("click", () => {
+        const newEntry = createAlimentoEntry(alimentos);
+        alimentosContainer.appendChild(newEntry);
+    });
+}
+
+// Create a single Alimento entry
+function createAlimentoEntry(alimentos) {
+    const alimentoEntry = document.createElement("div");
+    alimentoEntry.classList.add("alimento-entry");
+
+    alimentoEntry.innerHTML = `
+        <label for="alimento">Alimento:</label>
+        <select class="alimento" required>
+            ${alimentos.map(alimento => `
+                <option value="${alimento.id_alimento}" data-precio="${alimento.precio}">
+                    ${alimento.nombre_alimento} - $${alimento.precio}
+                </option>
+            `).join("")}
+        </select>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" class="cantidad" min="1" required>
+        <label for="total">Total:</label>
+        <input type="text" class="total" readonly>
+        <button type="button" class="remove-alimento">Eliminar</button>
+    `;
+
+    // Add event listener to calculate total when quantity changes
+    const selectElement = alimentoEntry.querySelector(".alimento");
+    const cantidadInput = alimentoEntry.querySelector(".cantidad");
+    const totalInput = alimentoEntry.querySelector(".total");
+
+    cantidadInput.addEventListener("input", () => {
+        const precio = selectElement.options[selectElement.selectedIndex].dataset.precio;
+        const cantidad = cantidadInput.value;
+        totalInput.value = `$${(cantidad * precio).toFixed(2)}`;
+    });
+
+    // Add event listener to remove the entry
+    alimentoEntry.querySelector(".remove-alimento").addEventListener("click", () => {
+        alimentoEntry.remove();
+    });
+
+    return alimentoEntry;
+}
+
+
 //Muestra mensajes
 function showMSG(button, handler){
     const tooltip = document.getElementById(handler);
@@ -397,35 +771,61 @@ function clearInnerTable(section, table){
 }
 
 //Generar tabla - Quizas necesite una modificacion
-function generateTable(section, title, header, data){
-    //Buscar en table.html
-    const destiny_load1 = document.querySelector('.'+section+' .table-title');
-    const destiny_load2 = document.querySelector('.'+section+' .sys-table');
-    //Añadir título en table.html
-    destiny_load1.innerHTML = title;
-    const tableh = document.createElement("thead");
-    const tableb = document.createElement("tbody");
-    //Poner el encabezado en table.html
-    const hd = document.createElement("tr"); 
-    header.forEach(h => {
-        const th = document.createElement("th");
-        th.textContent = h;
-        hd.appendChild(th);
+function generateTable(section, title, header, data) {
+    const titleEl = document.querySelector('.'+section+' .table-title');
+    const tableEl = document.querySelector('.'+section+' .sys-table');  
+    // Elimina cualquiera de las columnas (revisar)
+    document.querySelectorAll('.sys-table tr.selected-row').forEach(row => {
+        row.classList.remove('selected-row');
     });
-    tableh.appendChild(hd);
-    //Poner el contenido de table.html
-    destiny_load2.appendChild(tableh);
-    data.forEach((row, i)=>{
-        const rowt = document.createElement("tr");
-        Object.values(row).forEach((dat, j)=>{
-            const td = document.createElement("td");
-            td.textContent = dat;
-            rowt.appendChild(td);
-        });
-        tableb.appendChild(rowt);
+    // Setear titulo
+    titleEl.textContent = title;    
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    // Build thead
+    const headRow = document.createElement('tr');
+    header.forEach(colName => {
+      const th = document.createElement('th');
+      th.textContent = colName;
+      headRow.appendChild(th);
     });
-    destiny_load2.appendChild(tableb);
+    thead.appendChild(headRow); 
+    // Build tbody
+    // Buscar la columna la cantidad
+    const qtyColIndex = header.indexOf("Cantidad restante");    
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.addEventListener('click', () => {
+            // Deseleccionar otras columnas (revisar)
+            document.querySelectorAll('.sys-table tr').forEach(r => r.classList.remove('selected-row'));
+            tr.classList.add('selected-row');
+            });
+
+        //Tomar solo los valores que se tengan en los header
+        const vals = Object.values(row).slice(0, header.length);  
+        vals.forEach((val, idx) => {
+            const td = document.createElement('td');
+            td.textContent = val;
+            //Categorizar
+            if (idx === qtyColIndex && row.noStock) {
+            td.classList.add('no-stock');
+            }else if (idx === qtyColIndex && row.isLowStock) {
+            td.classList.add('low-stock');
+            }else if (idx === qtyColIndex && row.isMedStock) {
+            td.classList.add('mid-stock');
+            }else if (idx === qtyColIndex && row.isHighStock) {
+            td.classList.add('high-stock');
+            }
+            tr.appendChild(td);
+      });   
+      tbody.appendChild(tr);
+    }); 
+    //Actualizar
+    tableEl.innerHTML = '';
+    tableEl.appendChild(thead);
+    tableEl.appendChild(tbody);
 }
+
 
 //Poner columna adicional y funcionalidad custom
 async function addtableFeat(actions, headtitle){
@@ -453,7 +853,7 @@ async function addtableFeat(actions, headtitle){
 function findInfoinRow(button, headerName=null, colIndex=null){
     const locrow=button.closest("tr");
     const cells=locrow.querySelectorAll("td");
-    if(colIndex!=null && colIndex<cells.lenght){
+    if(colIndex!=null && colIndex<cells.length){
         return cells[colIndex].textContent.trim();
     }
     if(headerName!=null){
