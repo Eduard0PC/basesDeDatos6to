@@ -226,15 +226,41 @@ router.post('/search-ventas', (req, res) => {
 router.post('/see-pedidos', (req, res)=>{
     const connection = getConnection();
     connection.query(`
-        SELECT u.id_pedido, r.nombre_cliente, u.hora_pedido, r.direccion
-        FROM PedidoDetalles u, Pedidos r 
-        WHERE u.id_pedido = r.id_pedido
-        ORDER BY u.hora_pedido
+        SELECT id_pedido, hora_pedido
+        FROM PedidoDetalles 
         LIMIT 5`,
         (error, results)=>{
-        res.json({title: "Pedidos en Curso", header:["ID Pedido","Cliente", "Hora", "Dirección"], dbresults: results});
+        res.json({title: "Pedidos en Curso", header:["ID Pedido","Hora del pedido"], dbresults: results});
         connection.end();
     });
+});
+
+// Fetch pedido details by id_pedido
+router.post('/get-pedido-details', async (req, res) => {
+    const { id_pedido } = req.body;
+    const connection = getConnection();
+    const query = util.promisify(connection.query).bind(connection);
+
+    try {
+        const results = await query(
+            `SELECT p.id_pedido, p.nombre_cliente, p.direccion, a.nombre_alimento, p.cantidad_alimento, p.total_pedido
+            FROM Pedidos p
+            JOIN Alimentos a ON p.id_alimento = a.id_alimento
+            WHERE p.id_pedido = ?`,
+            [id_pedido]
+        );
+
+        res.json({
+            title: "Detalles del Pedido",
+            header: ["ID pedido", "Nombre del cliente", "Dirección del cliente", "Nombre del Alimento", "Cantidad", "Total"],
+            dbresults: results
+        });
+    } catch (error) {
+        console.error("Error al obtener detalles del pedido:", error);
+        res.status(500).json({ error: "Error al obtener detalles del pedido" });
+    } finally {
+        connection.end();
+    }
 });
 
 router.post('/add-pedido', async (req, res) => {
