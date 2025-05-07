@@ -463,3 +463,76 @@ th {
     background-color: #333;
 }
 
+/* Center the card */
+.card-client-pedidos {
+    grid-column: span 3; /* Center the card by spanning all columns */
+    background-color: #f9f9f9;
+    color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    display: none; /* Hidden by default */
+    margin: 0 auto; /* Center horizontally */
+    max-width: 800px; /* Optional: Limit the width */
+}
+
+/* Style the buttons container */
+.card-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Style the "Cerrar" button */
+.close-button {
+    padding: 10px 20px;
+    background-color: #f44336; /* Red background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transform: translateY(10px);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.close-button:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+.close-button:active {
+    background-color: #b71c1c;
+    transform: scale(0.95);
+}
+
+/* Style the "Marcar como entregado" button */
+.deliver-button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transform: translateY(10px);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.deliver-button:hover {
+    background-color: #388e3c; /* Darker green on hover */
+    transform: scale(1.05);
+}
+
+.deliver-button:active {
+    background-color: #2e7d32; /* Even darker green on click */
+    transform: scale(0.95);
+}

@@ -43,7 +43,7 @@ export async function loadOrders() {
         const footer = document.createElement("div");
         footer.classList.add("sys-actions-footbar");
         footer.innerHTML = `
-            <button id="markDelivered" class="deliver-button accept">Marcar como entregado</button>
+            <button id="viewPedidoDetails" class="deliver-button accept">Consultar pedido</button>
         `;
         destiny_load.appendChild(footer);
 
@@ -56,12 +56,12 @@ export async function loadOrders() {
 }
 
 function addEventsPedidos() {
-    const markDeliveredButton = document.getElementById("markDelivered");
+    const viewPedidoDetailsButton = document.getElementById("viewPedidoDetails");
 
-    markDeliveredButton.addEventListener("click", async () => {
+    viewPedidoDetailsButton.addEventListener("click", async () => {
         const selectedRow = document.querySelector(".card-pedidos .sys-table tr.selected-row"); // Find the selected row
         if (!selectedRow) {
-            alert("Seleccione un pedido para marcar como entregado.");
+            alert("Seleccione un pedido para consultar.");
             return;
         }
 
@@ -71,17 +71,86 @@ function addEventsPedidos() {
             return;
         }
 
-        if (confirm("¿Está seguro de marcar este pedido como entregado?")) {
-            try {
-                await connectnSubmit("/delete-pedido", { id_pedido });
-                selectedRow.remove(); // Remove the row from the table
-                alert("Pedido marcado como entregado.");
-            } catch (error) {
-                console.error("Error al marcar como entregado:", error);
-                alert("Hubo un error al marcar el pedido como entregado.");
-            }
+        try {
+            const info = await connectnSubmit("/get-pedido-details", { id_pedido });
+
+            // Populate the client pedidos table
+            loadClientPedidos(info.dbresults);
+
+            // Show the client pedidos card
+            document.querySelector(".card-client-pedidos").style.display = "block";
+        } catch (error) {
+            console.error("Error al consultar detalles del pedido:", error);
+            alert("Hubo un error al consultar los detalles del pedido.");
         }
     });
+}
+
+function loadClientPedidos(clientPedidos) {
+    const tableBody = document.querySelector(".client-pedidos-table tbody");
+    tableBody.innerHTML = ""; // Clear existing rows
+
+    clientPedidos.forEach(pedido => {
+        const row = document.createElement("tr");
+        Object.values(pedido).forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+
+    // Add buttons dynamically
+    const card = document.querySelector(".card-client-pedidos");
+    let buttonsContainer = card.querySelector(".card-buttons");
+
+    // If buttons don't exist, create them
+    if (!buttonsContainer) {
+        buttonsContainer = document.createElement("div");
+        buttonsContainer.classList.add("card-buttons");
+
+        // Add "Cerrar" button
+        const closeButton = document.createElement("button");
+        closeButton.textContent = "Cerrar";
+        closeButton.classList.add("close-button");
+        closeButton.addEventListener("click", () => {
+            card.style.display = "none";
+        });
+        buttonsContainer.appendChild(closeButton);
+
+        // Add "Marcar como entregado" button
+        const deliverButton = document.createElement("button");
+        deliverButton.textContent = "Marcar como entregado";
+        deliverButton.classList.add("deliver-button");
+        deliverButton.addEventListener("click", async () => {
+            const firstRow = tableBody.querySelector("tr");
+            if (!firstRow) {
+                alert("No hay pedidos para marcar como entregados.");
+                return;
+            }
+
+            const id_pedido = firstRow.querySelector("td").textContent; // Get the ID Pedido from the first row
+            if (!id_pedido) {
+                alert("No se pudo obtener el ID del pedido.");
+                return;
+            }
+
+            if (confirm("¿Está seguro de marcar este pedido como entregado?")) {
+                try {
+                    await connectnSubmit("/delete-pedido", { id_pedido });
+                    alert("Pedido marcado como entregado.");
+                    card.style.display = "none";
+                    garantLoad(() => loadOrders()); // Reload the orders
+                } catch (error) {
+                    console.error("Error al marcar como entregado:", error);
+                    alert("Hubo un error al marcar el pedido como entregado.");
+                }
+            }
+        });
+        buttonsContainer.appendChild(deliverButton);
+
+        card.appendChild(buttonsContainer);
+    }
 }
 
 //Carga empleados

@@ -106,38 +106,6 @@
     filter: brightness(1.3);
 }
 
-.deliver-button {
-    display: flex;
-    justify-content: center;
-    border-style: none;
-    border-radius: 5px;
-    padding: 15px;
-    width: 250px;
-    transform: translateY(10px);
-    color: white;
-    font-size: 16pt;
-    font-style: italic;
-    font-family: Georgia, sans-serif;
-    /*Cinematic*/
-    transition: 0.2s;
-}
-
-.deliver-button.accept {
-    background-color: #4CAF50;
-}
-.deliver-button.function {
-    background-color: black;
-}
-/*Animaciones del footer-button*/
-.deliver-button:hover {
-    scale: 105%;
-    filter: brightness(1.1);
-}
-.deliver-button:active {
-    scale: 95%;
-    filter: brightness(1.3);
-}
-
 /*Julianadas*/
 .footer-button-ins {
     justify-content: center;

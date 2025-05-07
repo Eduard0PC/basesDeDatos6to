@@ -225,3 +225,47 @@
     cursor: not-allowed; /* Disabled cursor */
 }
 
+/* Styling for dynamically generated table */
+.dynamic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dynamic-table thead {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.dynamic-table thead th {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.dynamic-table tbody tr {
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+.dynamic-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.dynamic-table tbody tr:hover {
+    background-color: #e0f7fa;
+}
+
+.dynamic-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
