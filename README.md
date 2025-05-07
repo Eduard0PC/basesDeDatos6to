@@ -1,12 +1,4 @@
 # Proyecto Base de datos. Restaurante Han-Burguesa
-<<<<<<< HEAD
-=======
-***
-**FUNCIONALIDADES FALTANTES**
-- Chequeo de QR
-- Funcionalidades de todos los botones
-***
->>>>>>> Coolthread80/main
 ## **NOTAS**
 - *FAVOR DE NO ELIMINAR O CAMBIAR EL ARCHIVO DB.JS*
 ***
