@@ -411,6 +411,48 @@ th {
   }
   @keyframes l3 {to{transform: rotate(1turn)}}
 
+/*Inventarios*/
+.no-stock::after {
+    animation: blink 3s infinite;
+    content: "❌ ";
+}  
+.low-stock::after {
+    animation: blink 3s infinite;
+    content: "⚠️ ";
+}  
+.mid-stock::after {
+    animation: blink 3s infinite;
+    content: "✅ ";
+}  
+.high-stock::after {
+    animation: blink 3s infinite;
+    content: "😜 ";
+}  
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+.no-stock{
+    color: red;
+    font-weight: bold;
+}  
+.low-stock{
+    color: orange;
+    font-weight: bold;
+}  
+.mid-stock{
+    color: limegreen;
+    font-weight: bold;
+}  
+.high-stock{
+    color: blue;
+    font-weight: bold;
+}
+
 /*---------------------------------------------------Jijija-------------------------------------------------*/
   @keyframes rainbow1 {
     0% { background-color: red; }

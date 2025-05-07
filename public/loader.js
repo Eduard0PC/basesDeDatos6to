@@ -779,7 +779,7 @@ function generateTable(section, title, header, data) {
         row.classList.remove('selected-row');
     });
     // Setear titulo
-    titleEl.textContent = title;    
+    titleEl.innerHTML = title;    
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
     // Build thead
