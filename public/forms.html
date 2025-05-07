@@ -41,19 +41,13 @@
         <div class="top-fields">
             <div class="general-form-data">
                 <label for="insumoName">Nombre del Insumo:</label>
-                <input type="text" id="insumoName" placeholder="Nombre del insumo" required>
-            </div>
-            <div class="options">
-                <label for="insumoUnit">Unidad de Medida:</label>
-                <input type="text" id="insumoUnit" placeholder="Unidad de medida" maxlength="2" required>
-            </div>
-        </div>
-        <div class="top-fields">
-            <div class="general-form-data">
+                <input type="text" id="insumoName" placeholder="Nombre del insumo" required><br>
                 <label for="insumoExpiry">Fecha de Caducidad:</label>
                 <input type="date" id="insumoExpiry" required>
             </div>
             <div class="options">
+                <label for="insumoUnit">Unidad de Medida:</label>
+                <input type="text" id="insumoUnit" placeholder="Unidad de medida" maxlength="2" required><br>
                 <label for="insumoQuantity">Cantidad:</label>
                 <input type="number" id="insumoQuantity" placeholder="Cantidad" required>
             </div>
@@ -75,27 +69,17 @@
         <div class="top-fields">
             <div class="general-form-data">
                 <label for="editInsumoId">ID del Insumo:</label>
-                <input type="text" id="editInsumoId" readonly>
+                <input type="text" id="editInsumoId" readonly><br>
+                <label for="editInsumoUnit">Unidad de Medida:</label>
+                <input type="text" id="editInsumoUnit" maxlength="2" required><br>
+                <label for="editInsumoQuantity">Cantidad:</label>
+                <input type="number" id="editInsumoQuantity" required>
             </div>
             <div class="options">
                 <label for="editInsumoName">Nombre del Insumo:</label>
-                <input type="text" id="editInsumoName" required>
-            </div>
-        </div>
-        <div class="top-fields">
-            <div class="general-form-data">
-                <label for="editInsumoUnit">Unidad de Medida:</label>
-                <input type="text" id="editInsumoUnit" maxlength="2" required>
-            </div>
-            <div class="options">
+                <input type="text" id="editInsumoName" required><br>
                 <label for="editInsumoExpiry">Fecha de Caducidad:</label>
                 <input type="date" id="editInsumoExpiry" required>
-            </div>
-        </div>
-        <div class="top-fields">
-            <div class="general-form-data">
-                <label for="editInsumoQuantity">Cantidad:</label>
-                <input type="number" id="editInsumoQuantity" required>
             </div>
         </div>
         <div class="form-actions">
@@ -139,17 +123,13 @@
         <div class="top-fields">
             <div class="general-form-data">
                 <label for="editPlatoId">ID del alimento:</label>
-                <input type="text" id="editPlatoId" readonly>
+                <input type="text" id="editPlatoId" readonly><br>
+                <label for="editPlatoPrecio">Precio:</label>
+                <input type="number" id="editPlatoPrecio" required>
             </div>
             <div class="options">
                 <label for="editPlatoNombre">Nombre del plato:</label>
                 <input type="text" id="editPlatoNombre" required>
-            </div>
-        </div>
-        <div class="top-fields">
-            <div class="general-form-data">
-                <label for="editPlatoPrecio">Precio:</label>
-                <input type="number" id="editPlatoPrecio" required>
             </div>
         </div>
         <div class="form-actions">
@@ -177,7 +157,6 @@
                 <input type="text" id="direccion" placeholder="Dirección" required>
             </div>
         </div>
-
         <!-- Alimentos Section -->
         <div id="alimentosContainer">
             <div class="alimento-entry">
@@ -193,7 +172,6 @@
             </div>
         </div>
         <button type="button" id="addAlimento">Añadir Alimento</button>
-
         <!-- Submit Section -->
         <div class="form-actions">
             <button class="form-button accept" type="submit" id="submitPedido">Realizar Pedido</button>

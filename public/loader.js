@@ -677,7 +677,7 @@ function createAlimentoEntry(alimentos) {
         <button type="button" class="remove-alimento">Eliminar</button>
     `;
 
-    // Add event listener to calculate total when quantity changes
+    // Añade un manejador de eventos para calcular el total cuando la contidad cambia
     const selectElement = alimentoEntry.querySelector(".alimento");
     const cantidadInput = alimentoEntry.querySelector(".cantidad");
     const totalInput = alimentoEntry.querySelector(".total");
