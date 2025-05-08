@@ -21,6 +21,7 @@ export async function backtoHome(){
     showGrid(".allcards");
     showMainScroll();
     closeMiniApps();
+    loadOrders();
 }
 
 //Carga pedidos - Para estas funciones elimina el menu y carga la tabla
