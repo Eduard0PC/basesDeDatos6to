@@ -540,10 +540,27 @@ function addEventsInsumos() {
         deleteButton.style.display = "none";
     }
 
+    async function connect(url, data = {}) {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+    
+        if (!response.ok) {
+            console.error("Error fetching data:", response.statusText);
+            return null;
+        }
+    
+        return await response.json();
+    }
+    
     // Example usage for live search
     searchBar.addEventListener("input", async () => {
         const searchTerm = searchBar.value.trim();
-        const info = await connect("/search-insumos", { searchTerm });
+        const info = await connect("/search-insumos ", { searchTerm });
         if (info) {
             generateTable("table-gen", info.title, info.header, info.dbresults);
         }
