@@ -44,34 +44,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             welcomeText.textContent = `Bienvenid@ ${username} (${role})`;
 
-            // Ajuste dinámico del min-width
-            const tempSpan = document.createElement("span");
-            tempSpan.style.visibility = "hidden";
-            tempSpan.style.position = "absolute";
-            tempSpan.style.whiteSpace = "nowrap"; // Evita el salto de línea
-            tempSpan.style.font = window.getComputedStyle(welcomeText).font; // Asegura la misma fuente
-            tempSpan.textContent = welcomeText.textContent;
-            document.body.appendChild(tempSpan);
-
-            // Ajusta el min-width correctamente
-            const textWidth = tempSpan.getBoundingClientRect().width;
-            welcomeText.style.minWidth = `${Math.ceil(textWidth) + 20}px`; // 20px extra de margen pa que no explote
-
-            // Elimina el span temporal
-            document.body.removeChild(tempSpan);
-
+            // Adjust the sidebar and cards based on the user's role
             if (role.toLowerCase() === "user") {
-                // Eliminar "Empleados" del sidebar
-                document.querySelector('li:has(.icon[src="src/empb.png"])')?.remove();
+                // Remove "Empleados" button from the sidebar
+                const empleadosBtn = document.getElementById("empleadosBtn");
+                if (empleadosBtn) {
+                    empleadosBtn.remove();
+                }
 
-                // Eliminar la tarjeta de empleados
+                // Remove the "Empleados" card
                 const empleadoCard = document.querySelector('.card-empleados');
                 const allcards = document.querySelector(".allcards");
 
                 if (empleadoCard) {
-                    empleadoCard.remove(); //Borra, elimina, desintala, fulmina, destruye, aniquila, extermina, erradica, extingue, suprime, liquida, acaba, remueve, desinstala, desmonta, desarma, descompone la tarjeta de empleados
+                    empleadoCard.remove();
                     setTimeout(() => {
-                        allcards.classList.add("no-empleados"); // Aplica la estructura de grid
+                        allcards.classList.add("no-empleados"); // Adjust grid layout
                     }, 50);
                 }
             }

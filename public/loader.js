@@ -13,6 +13,11 @@ export function garantLoad(func){
     clearForms();
     hideOverlay();
     func();
+    // Fetch user data on application load
+    fetchCurrentUser().then(() => {
+        // Initialize other functionalities after fetching user data
+        console.log("User data loaded:", currentUser);
+    });
 }
 
 //Regresar a Home
@@ -413,6 +418,28 @@ async function addActions(button){
     }
 }
 
+// Global variable to store user information
+let currentUser = null;
+
+// Function to fetch and store user information
+async function fetchCurrentUser() {
+    try {
+        const response = await fetch('/usuario');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                currentUser = data; // Store user data
+            } else {
+                console.error("Failed to fetch user data:", data.message);
+            }
+        } else {
+            console.error("Error fetching user data:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
+}
+
 //FUNCIONES DE EVENTOS ADICIONALES
 function addEventsEmployees(){
     const btn1 = document.querySelectorAll("#empDelete");
@@ -455,16 +482,22 @@ function addEventsInsumos() {
     const editForm = document.querySelector(".edit-insumo-form");
     const searchBar = document.getElementById("searchBar");
 
-    // Add Insumo Button
-    addButton.addEventListener("click", () => showForm("add-insumo-form"));
-    document.getElementById("addInsumoClose").addEventListener("click", () => closeForm("add-insumo-form"));
+    // Check if the user is an admin
+    if (currentUser.rol.toLowerCase() === 'admin') {
+        // Show the "Añadir insumo" button only for admins
+        addButton.style.display = "inline-block";
+        editButton.style.display = "inline-block";
+        deleteButton.style.display = "inline-block";
 
-    // Edit Insumo Button
-    editButton.addEventListener("click", () => {
-        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
-        if (!selectedRow) {
-            alert("Seleccione un insumo para editar. Tonotito");
-            return;
+        // Add Insumo Button
+        addButton.addEventListener("click", () => showForm("add-insumo-form"));
+        document.getElementById("addInsumoClose").addEventListener("click", () => closeForm("add-insumo-form"));
+        // Edit Insumo Button
+        editButton.addEventListener("click", () => {
+            const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+            if (!selectedRow) {
+                alert("Seleccione un insumo para editar.");
+                return;
         }
 
         // Populate Edit Form
@@ -482,24 +515,31 @@ function addEventsInsumos() {
         document.getElementById("editInsumoQuantity").value = quantity;
 
         showForm("edit-insumo-form");
-    });
+        });
 
-    document.getElementById("editInsumoClose").addEventListener("click", () => closeForm("edit-insumo-form"));
+        document.getElementById("editInsumoClose").addEventListener("click", () => closeForm("edit-insumo-form"));
 
-    // Delete Insumo Button
-    deleteButton.addEventListener("click", async () => {
-        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
-        if (!selectedRow) {
-            alert("Seleccione un insumo para eliminar. Tonotote");
-            return;
-        }
+        // Delete Insumo Button
+        deleteButton.addEventListener("click", async () => {
+            const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+            if (!selectedRow) {
+                alert("Seleccione un insumo para eliminar.");
+                return;
+            }
 
-        const id_insumo = findInfoinRow(selectedRow, "ID del sistema");
-        if (confirm("¿Está seguro de eliminar este insumo?")) {
-            await connectnSubmit("/delete-insumos", { id_insumo });
-            garantLoad(() => loadFood());
-        }
-    });
+            const id_insumo = findInfoinRow(selectedRow, "ID del sistema");
+            if (confirm("¿Está seguro de eliminar este insumo?")) {
+                await connectnSubmit("/delete-insumos", { id_insumo });
+                garantLoad(() => loadFood());
+            }
+        });
+
+    } else {
+        // Hide the button for non-admins
+        addButton.style.display = "none";
+        editButton.style.display = "none";
+        deleteButton.style.display = "none";
+    }
 
     async function connect(url, data = {}) {
         const response = await fetch(url, {
@@ -521,7 +561,7 @@ function addEventsInsumos() {
     // Example usage for live search
     searchBar.addEventListener("input", async () => {
         const searchTerm = searchBar.value.trim();
-        const info = await connect("/search-insumos", { searchTerm });
+        const info = await connect("/search-insumos ", { searchTerm });
         if (info) {
             generateTable("table-gen", info.title, info.header, info.dbresults);
         }
@@ -562,11 +602,6 @@ function addEventsVentas() {
     const searchBar = document.getElementById("searchPBar");
     const addPedido = document.getElementById("addPedido");
 
-    // Add Insumo Button
-    addButton.addEventListener("click", () => showForm("add-plato-form"));
-    document.getElementById("addPlatoClose").addEventListener("click", () => closeForm("add-plato-form"));
-
-    // Add Pedido Button
     // Add Pedido Button
     addPedido.addEventListener("click", async () => {
         await populateAlimentosDropdown();
@@ -575,43 +610,60 @@ function addEventsVentas() {
 
     document.getElementById("addPedidoClose").addEventListener("click", () => closeForm("add-pedido-form"));
 
-    // Edit Insumo Button
-    editButton.addEventListener("click", () => {
-        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
-        if (!selectedRow) {
-            alert("Seleccione un plato para editar. Tonotito");
-            return;
-        }
+    // Check if the user is an admin
+    if (currentUser.rol.toLowerCase() === 'admin') {
+        addButton.style.display = "inline-block";
+        editButton.style.display = "inline-block";
+        deleteButton.style.display = "inline-block";
 
-        // Populate Edit Form
-        const id = findInfoinRow(selectedRow, "ID del alimento");
-        const name = findInfoinRow(selectedRow, "Nombre del plato");
-        const price = findInfoinRow(selectedRow, "Precio");
+        // Add Insumo Button
+        addButton.addEventListener("click", () => showForm("add-plato-form"));
+        document.getElementById("addPlatoClose").addEventListener("click", () => closeForm("add-plato-form"));
 
-        // Fill form fields
-        document.getElementById("editPlatoId").value = id;
-        document.getElementById("editPlatoNombre").value = name;
-        document.getElementById("editPlatoPrecio").value = price;
 
-        showForm("edit-plato-form");
-    });
+        // Edit Insumo Button
+        editButton.addEventListener("click", () => {
+            const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+            if (!selectedRow) {
+                alert("Seleccione un plato para editar. Tonotito");
+                return;
+            }
 
-    document.getElementById("editPlatoClose").addEventListener("click", () => closeForm("edit-plato-form"));
+            // Populate Edit Form
+            const id = findInfoinRow(selectedRow, "ID del alimento");
+            const name = findInfoinRow(selectedRow, "Nombre del plato");
+            const price = findInfoinRow(selectedRow, "Precio");
 
-    // Delete Insumo Button
-    deleteButton.addEventListener("click", async () => {
-        const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
-        if (!selectedRow) {
-            alert("Seleccione un plato para eliminar. Tonotote");
-            return;
-        }
+            // Fill form fields
+            document.getElementById("editPlatoId").value = id;
+            document.getElementById("editPlatoNombre").value = name;
+            document.getElementById("editPlatoPrecio").value = price;
 
-        const id_alimento = findInfoinRow(selectedRow, "ID del alimento");
-        if (confirm("¿Está seguro de eliminar este plato?")) {
-            await connectnSubmit("/delete-ventas", { id_alimento });
-            garantLoad(() => loadSales());
-        }
-    });
+            showForm("edit-plato-form");
+        });
+
+        document.getElementById("editPlatoClose").addEventListener("click", () => closeForm("edit-plato-form"));
+
+        // Delete Insumo Button
+        deleteButton.addEventListener("click", async () => {
+            const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
+            if (!selectedRow) {
+                alert("Seleccione un plato para eliminar. Tonotote");
+                return;
+            }
+
+            const id_alimento = findInfoinRow(selectedRow, "ID del alimento");
+            if (confirm("¿Está seguro de eliminar este plato?")) {
+                await connectnSubmit("/delete-ventas", { id_alimento });
+                garantLoad(() => loadSales());
+            }
+        });
+    } else {
+        // Hide the button for non-admins
+        addButton.style.display = "none";
+        editButton.style.display = "none";
+        deleteButton.style.display = "none";
+    }
 
     async function connect(url, data = {}) {
         const response = await fetch(url, {
