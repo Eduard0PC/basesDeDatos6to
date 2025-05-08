@@ -228,7 +228,7 @@ router.post('/see-pedidos', (req, res)=>{
     connection.query(`
         SELECT id_pedido, hora_pedido
         FROM PedidoDetalles 
-        LIMIT 5`,
+        LIMIT 10`,
         (error, results)=>{
         res.json({title: "Pedidos en Curso", header:["ID Pedido","Hora del pedido"], dbresults: results});
         connection.end();
