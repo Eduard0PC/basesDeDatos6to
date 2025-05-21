@@ -1,7 +1,7 @@
 {
   "name": "programa",
   "version": "1.0.0",
-  "main": "index.html",
+  "main": "server/app.js",
   "scripts": {
     "start": "node server/app.js"
   },
