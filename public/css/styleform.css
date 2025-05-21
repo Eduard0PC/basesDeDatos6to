@@ -173,7 +173,12 @@
     cursor: not-allowed; /* Disabled cursor */
 }
 
-/* Styling for dynamically generated table */
+.alimento-entry {
+    background-color: #72ff959d;
+    padding: 10px;
+}
+
+/*Styling for dynamically generated table
 .dynamic-table {
     width: 100%;
     border-collapse: collapse;
@@ -216,4 +221,5 @@
     border: 1px solid #ddd;
     color: #333;
 }
+*/
 

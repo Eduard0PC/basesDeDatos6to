@@ -322,6 +322,7 @@ async function deleteUser(button) {
     //Recarga
     garantLoad(()=>(loadEmployees()));
 }
+/*
 //Añade insumos
 async function AddIns(button) {
     const info = findInfoinRow(button, "ID del sistema");
@@ -330,7 +331,7 @@ async function AddIns(button) {
     //Recarga
     garantLoad(()=>(loadFood()));
 }
-
+*/
 //Genera QR
 async function generateQR(button) {
     const idEmpleado = findInfoinRow(button, "ID del sistema"); // Obtiene el ID de la fila
