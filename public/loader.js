@@ -727,6 +727,15 @@ function addEventsVentas() {
             };
         });
 
+        if(alimentos.length==0){
+            alert("Debe añadir al menos un alimento al pedido");
+            return;
+        }
+        if(alimentos.some(a=>!a.id_alimento||!a.cantidad||a.cantidad<=0)){
+            alert("Por favor, complete la información de todos los alimentos");
+            return;
+        }
+
         const payload = {
             nombre_cliente: nombreCliente,
             direccion: direccion,
