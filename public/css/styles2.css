@@ -331,7 +331,9 @@ body::after {
 }
 
 .card-pedidos .table-container {
+    max-height: 235px;
     padding-bottom: 0;
+    overflow-y: auto;
 }
 
 .table-horizon-style {
@@ -415,18 +417,22 @@ th {
 .no-stock::after {
     animation: blink 3s infinite;
     content: "❌ ";
+    z-index: 0;
 }  
 .low-stock::after {
     animation: blink 3s infinite;
     content: "⚠️ ";
+    z-index: 0;
 }  
 .mid-stock::after {
     animation: blink 3s infinite;
     content: "✅ ";
+    z-index: 0;
 }  
 .high-stock::after {
     animation: blink 3s infinite;
     content: "😜 ";
+    z-index: 0;
 }  
 @keyframes blink {
     0%, 100% {
@@ -437,20 +443,28 @@ th {
     }
 }
 .no-stock{
+    position: relative;
     color: red;
     font-weight: bold;
+    z-index: 0;
 }  
 .low-stock{
+    position: relative;
     color: orange;
     font-weight: bold;
+    z-index: 0;
 }  
 .mid-stock{
+    position: relative;
     color: limegreen;
     font-weight: bold;
+    z-index: 0;
 }  
 .high-stock{
+    position: relative;
     color: blue;
     font-weight: bold;
+    z-index: 0;
 }
 
 /*---------------------------------------------------Jijija-------------------------------------------------*/
@@ -493,7 +507,7 @@ th {
     cursor: pointer;
 }
 #searchButton:hover {
-    background-color: #333;
+    background-color: #333333;
 }
 
 /* Center the card */
