@@ -119,12 +119,12 @@
     font-size: 16pt;
     font-style: italic;
     font-family: Georgia, sans-serif;
+    z-index: 1;
     /*Cinematic*/
     transition: 0.2s;
 }
 .footer-button-ins.accept {
     background-color: #4CAF50;
-    z-index: 1;
 }
 .footer-button-ins.modify {
     font-weight: bold;
