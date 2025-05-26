@@ -126,7 +126,7 @@ function loadClientPedidos(clientPedidos) {
 
         // Add "Marcar como entregado" button
         const deliverButton = document.createElement("button");
-        deliverButton.textContent = "Marcar como entregado";
+        deliverButton.textContent = "Completar venta";
         deliverButton.classList.add("deliver-button");
         deliverButton.addEventListener("click", async () => {
             const firstRow = tableBody.querySelector("tr");
