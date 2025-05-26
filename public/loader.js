@@ -626,7 +626,7 @@ function addEventsVentas() {
         editButton.addEventListener("click", () => {
             const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
             if (!selectedRow) {
-                alert("Seleccione un plato para editar. Tonotito");
+                alert("Seleccione un plato para editar");
                 return;
             }
 
@@ -649,7 +649,7 @@ function addEventsVentas() {
         deleteButton.addEventListener("click", async () => {
             const selectedRow = document.querySelector(".sys-table tr.selected-row"); // Find the selected row
             if (!selectedRow) {
-                alert("Seleccione un plato para eliminar. Tonotote");
+                alert("Seleccione un plato para eliminar");
                 return;
             }
 
