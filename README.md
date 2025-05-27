@@ -69,6 +69,16 @@ CREATE TABLE Pedidos (
     CONSTRAINT fk_idalimento FOREIGN KEY (id_alimento) REFERENCES Alimentos(id_alimento)
 );
 ````
+- TABLA REGISTRO:
+````
+CREATE TABLE IF NOT EXISTS Registro (
+	  id_registro INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT REFERENCES UsuariosNom(id_usuario),
+    seccion varchar(16) NOT NULL,
+    accion varchar(128) NOT NULL,
+    hora timestamp NOT NULL
+);
+````
 - TABLA REGISTROHORARIO:
 ````
 CREATE TABLE RegistroHorario (
