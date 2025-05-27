@@ -257,11 +257,14 @@ router.post('/search-ventas', (req, res) => {
 router.post('/see-pedidos', (req, res)=>{
     const connection = getConnection();
     connection.query(`
-        SELECT id_pedido, hora_pedido
-        FROM PedidoDetalles 
+        SELECT pd.id_pedido, pd.hora_pedido, SUM(p.total_pedido) AS total_pedido
+        FROM PedidoDetalles pd
+        JOIN Pedidos p ON pd.id_pedido = p.id_pedido
+        GROUP BY pd.id_pedido, pd.hora_pedido
+        ORDER BY pd.id_pedido DESC
         LIMIT 10`,
         (error, results)=>{
-        res.json({title: "Pedidos en Curso", header:["ID Pedido","Hora del pedido"], dbresults: results});
+        res.json({title: "Pedidos en Curso", header:["ID Pedido","Hora del pedido","Total del pedido ($)"], dbresults: results});
         connection.end();
     });
 });
