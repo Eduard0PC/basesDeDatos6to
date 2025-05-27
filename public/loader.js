@@ -13,11 +13,8 @@ export function garantLoad(func){
     clearForms();
     hideOverlay();
     func();
-    // Fetch user data on application load
-    fetchCurrentUser().then(() => {
-        // Initialize other functionalities after fetching user data
-        console.log("User data loaded:", currentUser);
-    });
+    //Trackea la sesion actual
+    trackSession().then();
 }
 
 //Regresar a Home
@@ -143,10 +140,16 @@ function loadClientPedidos(clientPedidos) {
 
             if (confirm("¿Está seguro de marcar este pedido como entregado?")) {
                 try {
-                    await connectnSubmit("/delete-pedido", { id_pedido });
-                    alert("Pedido marcado como entregado.");
-                    card.style.display = "none";
-                    garantLoad(() => loadOrders()); // Reload the orders
+                    const response = await connectnSubmit("/delete-pedido", { id_pedido });
+                    if(response.success){
+                        alert("Pedido marcado como entregado.");
+                        card.style.display = "none";
+                        await trackAction("Pedidos", `Marcó como entregado un pedido (ID:${response.del_id})`);
+                        //Recarga
+                        garantLoad(()=>(loadOrders()));
+                    }else{
+                        await trackAction("Pedidos", `Intentó marcar como entregado un pedido (ID:${response.del_id})`);
+                    }
                 } catch (error) {
                     console.error("Error al marcar como entregado:", error);
                     alert("Hubo un error al marcar el pedido como entregado.");
@@ -275,6 +278,30 @@ async function loadTimeEmployees(){
     }
 }
 
+//Carga las modificiaciones que realizaron los empleados
+async function loadTrackEmployees(){
+    try{
+        const destiny_load = document.querySelector('.table-gen');
+        //Carga la plantilla
+        const response = await fetch("table.html");
+        if(response.ok){
+            destiny_load.innerHTML= await response.text();
+        }
+        //Contacto con la base de datos
+        const info = await connect('/see-track-empleados');
+        //CARGA DE COMPONENTES
+        //Genera la tabla con el contenido
+        generateTable('table-gen', info.title, info.header, info.dbresults);
+        //Genera acciones del pie de página
+        await generateActionsFooter('table-gen', '.std-buttons.trackemps');
+        //Añado eventos
+        addEventsTimeEmployees();
+        destiny_load.style.display="flex";
+    }catch (error){
+        console.error("Error al cargar contenido: ", error);
+    }
+}
+
 //Carga miniapps
 async function loadMiniApp(miniapp){
     function createNewScript() {
@@ -291,8 +318,9 @@ async function loadMiniApp(miniapp){
         const container = document.querySelectorAll(miniapp);
         const response = await fetch(miniapp+'.html');
         if(response.ok){
+            const content = await response.text();
             for (const minapp of container) {
-                minapp.innerHTML = await response.text();
+                minapp.innerHTML = content;
             }
         }
         //Busca el script que se acabo de generar y lo destruyo, luego lo vuelvo a crear
@@ -318,9 +346,21 @@ function closeMiniApps(){
 async function deleteUser(button) {
     const info = findInfoinRow(button, "ID del sistema");
     const format = {id: info};
-    await connectnSubmit('/delete-user', format);
-    //Recarga
-    garantLoad(()=>(loadEmployees()));
+    const response = await connectnSubmit('/delete-user', format);
+    if(response.success){
+        await trackAction("Empleados", `Eliminó un empleado (ID:${response.del_id})`);
+        //Recarga
+        garantLoad(()=>(loadEmployees()));
+    }else{
+        await trackAction("Empleados", `Intentó eliminar un empleado (ID:${response.del_id})`);
+    }
+}
+
+async function trackAction(section, action){
+    const sessionData = await trackSession();
+    //console.log(sessionData);
+    const format = {id: sessionData.id, section:section, action:action};
+    await connectnSubmit('/track-user', format);
 }
 /*
 //Añade insumos
@@ -364,7 +404,12 @@ async function addUser(event) {
     const schstart = style.getPropertyValue('--text-value-a').replaceAll(filter, '');
     const schend = style.getPropertyValue('--text-value-b').replaceAll(filter, '');
     const format= {username: username, pswd: password, role: role, hinit: schstart, hfinale: schend};
-    await connectnSubmit('/add-user', format);
+    const response = await connectnSubmit('/add-user', format);
+    if(response.success){
+        await trackAction("Empleados", `Agregó un empleado (ID:${response.new_id})`);
+    } else {
+        await trackAction("Empleados", `Intentó agregar un empleado`);
+    }
     //Recarga
     garantLoad(()=>(loadEmployees()));
 }
@@ -419,27 +464,27 @@ async function addActions(button){
     }
 }
 
-// Global variable to store user information
-let currentUser = null;
-
-// Function to fetch and store user information
-async function fetchCurrentUser() {
-    try {
+//Trackear la session
+async function trackSession(){
+    try{
         const response = await fetch('/usuario');
-        if (response.ok) {
+        if (response.ok){
             const data = await response.json();
-            if (data.success) {
-                currentUser = data; // Store user data
+            if (data.success){
+                currentUser=data;
+                return data;
             } else {
-                console.error("Failed to fetch user data:", data.message);
+                console.error("Error al encontrar la sesion:", data.message);
             }
         } else {
-            console.error("Error fetching user data:", response.statusText);
+            console.error("Error al encontrar la sesion:", response.statusText);
         }
-    } catch (error) {
-        console.error("Error fetching user data:", error);
+    }catch(error){
+        console.error("Error al encontrar la sesion:", error);
     }
 }
+// Global variable to store user information
+let currentUser = null;
 
 //FUNCIONES DE EVENTOS ADICIONALES
 function addEventsEmployees(){
@@ -448,6 +493,7 @@ function addEventsEmployees(){
     const btn3 = document.getElementById("empAdd");
     const btn4 = document.getElementById("empAddClose");
     const btn5 = document.getElementById("empTime");
+    const btn6 = document.getElementById("empTrack");
     const form = document.querySelector('.add-emp-form');
     btn1.forEach(btn=>{
         btn.addEventListener('click', ()=>(deleteUser(btn)));
@@ -462,12 +508,13 @@ function addEventsEmployees(){
     btn3.addEventListener('click', ()=>(showForm('add-emp-form')));
     btn4.addEventListener('click', ()=>(closeForm('add-emp-form')));
     btn5.addEventListener('click', ()=>(loadTimeEmployees()));
+    btn6.addEventListener('click', ()=>(loadTrackEmployees()));
     form.addEventListener('submit', (event)=>(addUser(event)));
 }
 
 function addEventsTimeEmployees(){
     const btn1 = document.getElementById("empBack");
-    btn1.addEventListener('click', ()=>(loadEmployees()));
+    btn1.addEventListener('click', ()=>(garantLoad(loadEmployees)));
 }
 
 function addEventsQR(){
@@ -527,11 +574,16 @@ function addEventsInsumos() {
                 alert("Seleccione un insumo para eliminar.");
                 return;
             }
-
             const id_insumo = findInfoinRow(selectedRow, "ID del sistema");
             if (confirm("¿Está seguro de eliminar este insumo?")) {
-                await connectnSubmit("/delete-insumos", { id_insumo });
-                garantLoad(() => loadFood());
+                const response = await connectnSubmit("/delete-insumos", { id_insumo });
+                if(response.success){
+                    await trackAction("Insumos", `Eliminó un insumo (ID:${response.del_id})`);
+                    //Recarga
+                    garantLoad(()=>(loadFood()));
+                }else{
+                    await trackAction("Insumos", `Intentó eliminar un insumo (ID:${response.del_id})`);
+                }
             }
         });
 
@@ -576,8 +628,13 @@ function addEventsInsumos() {
         const caducidad = document.getElementById("insumoExpiry").value;
         const cantidad = document.getElementById("insumoQuantity").value;
 
-        await connectnSubmit("/add-insumos", { nombre_insumo, unidad_medida, caducidad, cantidad });
-        garantLoad(() => loadFood());
+        const response = await connectnSubmit("/add-insumos", { nombre_insumo, unidad_medida, caducidad, cantidad });
+        if (response.success){
+            await trackAction("Insumos", `Agregó un insumo (ID:${response.new_id})`);
+            garantLoad(() => loadFood());
+        } else {
+            await trackAction("Insumos", `Intentó agregar un insumo`);
+        }
     });
 
     editForm.addEventListener("submit", async (event) => {
@@ -588,8 +645,14 @@ function addEventsInsumos() {
         const caducidad = document.getElementById("editInsumoExpiry").value;
         const cantidad = document.getElementById("editInsumoQuantity").value;
 
-        await connectnSubmit("/edit-insumos", { id_insumo, nombre_insumo, unidad_medida, caducidad, cantidad });
-        garantLoad(() => loadFood());
+        const response = await connectnSubmit("/edit-insumos", { id_insumo, nombre_insumo, unidad_medida, caducidad, cantidad });
+        if(response.success){
+            await trackAction("Insumos", `Actualizó un insumo (ID:${response.mod_id})`);
+            //Recarga
+            garantLoad(()=>(loadFood()));
+        }else{
+            await trackAction("Insumos", `Intentó actualizar un insumo (ID:${response.mod_id})`);
+        }
     });
 }
 
@@ -655,8 +718,14 @@ function addEventsVentas() {
 
             const id_alimento = findInfoinRow(selectedRow, "ID del alimento");
             if (confirm("¿Está seguro de eliminar este plato?")) {
-                await connectnSubmit("/delete-ventas", { id_alimento });
-                garantLoad(() => loadSales());
+                const response = await connectnSubmit("/delete-ventas", { id_alimento });
+                if(response.success){
+                    await trackAction("Platillos", `Eliminó un platillo (ID:${response.del_id})`);
+                    //Recarga
+                    garantLoad(()=>(loadSales()));
+                }else{
+                    await trackAction("Platillos", `Intentó eliminar un platillo (ID:${response.del_id})`);
+                }
             }
         });
     } else {
@@ -698,8 +767,14 @@ function addEventsVentas() {
         const nombre_alimento = document.getElementById("platoNombre").value;
         const precio_alimento = document.getElementById("platoPrecio").value;
 
-        await connectnSubmit("/add-ventas", { nombre_alimento, precio_alimento });
-        garantLoad(() => loadSales());
+        const response = await connectnSubmit("/add-ventas", { nombre_alimento, precio_alimento });
+        if(response.success){
+            await trackAction("Platillos", `Agregó un platillo (ID:${response.new_id})`);
+            //Recarga
+            garantLoad(()=>(loadSales()));
+        }else{
+            await trackAction("Platillos", `Intentó agregar un platillo`);
+        }
     });
 
     editForm.addEventListener("submit", async (event) => {
@@ -708,8 +783,14 @@ function addEventsVentas() {
         const nombre_alimento = document.getElementById("editPlatoNombre").value;
         const precio_alimento = document.getElementById("editPlatoPrecio").value;
 
-        await connectnSubmit("/edit-ventas", { id_alimento, nombre_alimento, precio_alimento });
-        garantLoad(() => loadSales());
+        const response = await connectnSubmit("/edit-ventas", { id_alimento, nombre_alimento, precio_alimento });
+        if(response.success){
+            await trackAction("Platillos", `Actualizó un platillo (ID:${response.mod_id})`);
+            //Recarga
+            garantLoad(()=>(loadSales()));
+        }else{
+            await trackAction("Platillos", `Intentó actualizar un platillo (ID:${response.mod_id})`);
+        }
     });
 
     // Handle Pedido Form Submission
@@ -743,14 +824,22 @@ function addEventsVentas() {
         };
 
         try {
+            /*
             await fetch("/add-pedido", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-
-            alert("Pedido realizado con éxito");
-            garantLoad(() => loadSales());
+            */
+            const response = await connectnSubmit('/add-pedido', payload);
+            if(response.success){
+                await trackAction("Pedidos", `Lanzó un pedido (ID:${response.new_id})`);
+                //Recarga
+                alert("Pedido realizado con éxito");
+                garantLoad(()=>(loadSales()));
+            }else{
+                await trackAction("Pedidos", `Intentó eliminar un platillo`);
+            }
         } catch (error) {
             console.error("Error al realizar el pedido:", error);
             alert("Hubo un error al realizar el pedido.");

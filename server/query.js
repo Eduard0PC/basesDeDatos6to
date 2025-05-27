@@ -29,10 +29,24 @@ router.post('/see-empleados', (req, res) => {
 router.post('/see-time-empleados', (req, res) => {
     const connection = getConnection();
     connection.query(`
-        SELECT *
-        FROM RegistroHorario`,
+        SELECT t.id_registro, t.id_usuario, u.nombre_usuario, t.entrada, t.salida
+        FROM RegistroHorario t, UsuariosNom u
+        WHERE t.id_usuario=u.id_usuario`,
         (error, results)=>{
-        res.json({title: "Registro de entradas y salidas de empleados", header:["ID del sistema" ,"Nombre", "Entrada", "Salida"], dbresults: results});
+        res.json({title: "Registro de entradas y salidas de empleados", header:["ID del sistema" ,"ID Usuario", "Nombre", "Entrada", "Salida"], dbresults: results});
+        connection.end();
+    });
+});
+
+//ver el registro de empleados al trabajo
+router.post('/see-track-empleados', (req, res) => {
+    const connection = getConnection();
+    connection.query(`
+        SELECT tr.id_registro, tr.id_usuario, u.nombre_usuario, r.rol, tr.seccion, tr.accion, tr.hora
+        FROM Registro tr, UsuariosNom u, UsuariosRol r
+        WHERE tr.id_usuario=u.id_usuario AND tr.id_usuario=r.id_usuario`,
+        (error, results)=>{
+        res.json({title: "Historial de empleados", header:["ID del sistema" ,"ID Usuario", "Nombre", "Rol", "Sección", "Acción", "Hora"], dbresults: results});
         connection.end();
     });
 });
@@ -52,10 +66,10 @@ router.post('/delete-user', async (req, res)=> {
             `DELETE FROM UsuariosNom
             WHERE id_usuario = ? `
             , cid);
-        res.json({message: "Usuario eliminado"});
+        res.json({message: "Usuario eliminado", success: true, del_id: cid});
     } catch (error) {
         console.error("Error al eliminar usuario:", error);
-        res.status(500).json({ error: "Error al eliminar usuario" });
+        res.status(500).json({ error: "Error al eliminar usuario", success: false, del_id: cid});
     } finally {
         connection.end();
     }
@@ -76,15 +90,32 @@ router.post('/add-user', async (req, res)=> {
             `INSERT INTO UsuariosRol 
             VALUES (?, ?)`
             , [tid, role]);
-        res.json({message: "Usuario añadido"});
+        res.json({message: "Usuario añadido", success: true, new_id: tid});
     } catch (error) {
         console.error("Error al agregar usuario:", error);
-        res.status(500).json({ error: "Error al agregar usuario" });
+        res.status(500).json({ error: "Error al agregar usuario", success: false});
     } finally {
         connection.end();
     }
 });
-
+//Monitorear un usuario
+router.post('/track-user', async (req, res)=> {
+    const {id, section, action} = req.body;
+    const connection = getConnection();
+    const query = util.promisify(connection.query).bind(connection)
+    try{
+        const q1 = await query(
+            `INSERT INTO Registro(id_usuario, seccion, accion, hora) 
+            VALUES (?,?,?,NOW())`
+            , [id, section, action]);
+        res.json({message: "Usuario monitoreado"});
+    } catch (error) {
+        console.error("Error al monitorear usuario:", error);
+        res.status(500).json({ error: "Error al monitorear usuario" });
+    } finally {
+        connection.end();
+    }
+});
 //-----------------------------------------CONSULTAS DE VENTAS---------------------------------------------
 //ver todas las ventas
 router.post('/see-ventas', (req, res) => {
@@ -105,16 +136,16 @@ router.post('/add-ventas', async (req, res) => {
 
     try {
         // Insert into Alimentos table
-        await query(
+        const q1 = await query(
             `INSERT INTO Alimentos (nombre_alimento, precio)
             VALUES (?, ?)`,
             [nombre_alimento, precio_alimento]
         );
-
-        res.json({ message: "Plato añadido correctamente" });
+        const newID = q1.insertId;
+        res.json({ message: "Plato añadido correctamente", success: true, new_id: newID});
     } catch (error) {
         console.error("Error al agregar plato:", error);
-        res.status(500).json({ error: "Error al agregar plato" });
+        res.status(500).json({ error: "Error al agregar plato", success: false});
     } finally {
         connection.end();
     }
@@ -135,10 +166,10 @@ router.post('/edit-ventas', async (req, res) => {
             [nombre_alimento, precio_alimento, id_alimento]
         );
 
-        res.json({ message: "Plato actualizado correctamente" });
+        res.json({ message: "Plato actualizado correctamente", success: true, mod_id: id_alimento});
     } catch (error) {
         console.error("Error al actualizar plato:", error);
-        res.status(500).json({ error: "Error al actualizar plato" });
+        res.status(500).json({ error: "Error al actualizar plato", success: false, mod_id: id_alimento});
     } finally {
         connection.end();
     }
@@ -171,10 +202,10 @@ router.post('/delete-ventas', async (req, res) => {
             [id_alimento]
         );
 
-        res.json({ message: "Plato y sus referencias eliminados correctamente" });
+        res.json({ message: "Plato y sus referencias eliminados correctamente", success: true, del_id: id_alimento});
     } catch (error) {
         console.error("Error al eliminar plato y sus referencias:", error);
-        res.status(500).json({ error: "Error al eliminar plato y sus referencias" });
+        res.status(500).json({ error: "Error al eliminar plato y sus referencias", success: false, del_id: id_alimento});
     } finally {
         connection.end();
     }
@@ -285,10 +316,10 @@ router.post('/add-pedido', async (req, res) => {
             );
         }
 
-        res.json({ message: "Pedido añadido correctamente" });
+        res.json({ message: "Pedido añadido correctamente", success: true, new_id: id_pedido});
     } catch (error) {
         console.error("Error al añadir pedido:", error);
-        res.status(500).json({ error: "Error al añadir pedido" });
+        res.status(500).json({ error: "Error al añadir pedido", success: false});
     } finally {
         connection.end();
     }
@@ -315,10 +346,10 @@ router.post('/delete-pedido', async (req, res) => {
             [id_pedido]
         );
 
-        res.json({ message: "Pedido eliminado correctamente" });
+        res.json({ message: "Pedido eliminado correctamente", success: true, del_id: id_pedido});
     } catch (error) {
         console.error("Error al eliminar pedido:", error);
-        res.status(500).json({ error: "Error al eliminar pedido" });
+        res.status(500).json({ error: "Error al eliminar pedido", success: false, del_id: id_pedido});
     } finally {
         connection.end();
     }
@@ -353,7 +384,7 @@ router.post('/see-insumos', (req, res) => {
         (error, results) => {
             if (error) {
                 console.error("Error fetching insumos:", error);
-                return res.status(500).json({ error: "Error fetching insumos" });
+                return res.status(500).json({error: "Error fetching insumos"});
             }
 
             // Add stock flags
@@ -388,10 +419,10 @@ router.post('/add-insumos', async (req, res)=> {
             `INSERT INTO VencInsumos (id_insumo, caducidad, cantidad)
             VALUES (?, ?, ?)`
             , [id_insumo, caducidad, cantidad]);
-        res.json({message: "Insumo añadido correctamente"});
+        res.json({message: "Insumo añadido correctamente", success: true, new_id: id_insumo});
     } catch (error) {
         console.error("Error al agregar insumo:", error);
-        res.status(500).json({ error: "Error al agregar insumo" });
+        res.status(500).json({error: "Error al agregar insumo", success: false});
     } finally {
         connection.end();
     }
@@ -411,7 +442,6 @@ router.post('/edit-insumos', async (req, res) => {
             WHERE id_insumo = ?`,
             [nombre_insumo, unidad_medida, id_insumo]
         );
-
         // Update VencInsumos table
         await query(
             `UPDATE VencInsumos
@@ -419,11 +449,10 @@ router.post('/edit-insumos', async (req, res) => {
             WHERE id_insumo = ?`,
             [caducidad, cantidad, id_insumo]
         );
-
-        res.json({ message: "Insumo actualizado correctamente" });
+        res.json({ message: "Insumo actualizado correctamente", success: true, mod_id: id_insumo});
     } catch (error) {
         console.error("Error al actualizar insumo:", error);
-        res.status(500).json({ error: "Error al actualizar insumo" });
+        res.status(500).json({ error: "Error al actualizar insumo", success: false, mod_id: id_insumo});
     } finally {
         connection.end();
     }
@@ -450,10 +479,10 @@ router.post('/delete-insumos', async (req, res) => {
             [id_insumo]
         );
 
-        res.json({ message: "Insumo eliminado correctamente" });
+        res.json({ message: "Insumo eliminado correctamente", success: true, del_id: id_insumo});
     } catch (error) {
         console.error("Error al eliminar insumo:", error);
-        res.status(500).json({ error: "Error al eliminar insumo" });
+        res.status(500).json({ error: "Error al eliminar insumo", sucess: false, del_id: id_insumo});
     } finally {
         connection.end();
     }
