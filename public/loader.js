@@ -144,11 +144,11 @@ function loadClientPedidos(clientPedidos) {
                     if(response.success){
                         alert("Pedido marcado como entregado.");
                         card.style.display = "none";
-                        await trackAction("Pedidos", `Marcó como entregado un pedido (ID:${response.del_id})`);
+                        await trackAction("Pedidos", `Marcó como completado un pedido (ID:${response.del_id})`);
                         //Recarga
                         garantLoad(()=>(loadOrders()));
                     }else{
-                        await trackAction("Pedidos", `Intentó marcar como entregado un pedido (ID:${response.del_id})`);
+                        await trackAction("Pedidos", `Intentó marcar como completado un pedido (ID:${response.del_id})`);
                     }
                 } catch (error) {
                     console.error("Error al marcar como entregado:", error);
@@ -838,7 +838,7 @@ function addEventsVentas() {
                 alert("Pedido realizado con éxito");
                 garantLoad(()=>(loadSales()));
             }else{
-                await trackAction("Pedidos", `Intentó eliminar un platillo`);
+                await trackAction("Pedidos", `Intentó lanzar un pedido`);
             }
         } catch (error) {
             console.error("Error al realizar el pedido:", error);
