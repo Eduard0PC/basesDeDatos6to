@@ -1,4 +1,5 @@
-# Proyecto Base de datos. Restaurante Han-Burguesa
+# Plataforma Web para negocio Hamburguesa
+Plataforma web para controlar insumos, entradas y salidas del personal a travez de verificación por QR y manejo de pedidos para un negocio de comida rapida
 ## **NOTAS**
 - *FAVOR DE NO ELIMINAR O CAMBIAR EL ARCHIVO DB.JS*
 ***
